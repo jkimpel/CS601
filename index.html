@@ -69,18 +69,18 @@
 		<div><a href="hw2p1.html">hw2p1.html</a></div>
 		
 	<h2>Homework 2, part 2:</h2>
-		<form name="feedback" action="validate()" method="get">
+		<form name="feedbackForm" id="feedbackForm" action="thanks.html" onSubmit="return  validate(this)">
 			<div>
 				Name:
-				<input name="Name" type="text"/>
+				<input name="name" id="name" type="text"/>
 			</div>
 			<div>
 				Zip Code:
-				<input name="Zip" type="text"/>
+				<input name="zip" id="zip" type="text"/>
 			</div>
 			<div>
 				Email Address:
-				<input name="emailAddress" type="text"/>
+				<input name="emailAddress" id="emailAddress" type="text"/>
 			</div>
 			<div>
 				<input value="Submit" type="submit"/>
