@@ -17,28 +17,50 @@
 	<div id="myAccordion">
 		<h2><a href="#one">Manual</a></h2>
 		<div>
-			<form name="find_meeting" action="find_meeting.php" method="get">
-				<div>
-					Location: <input type="text" name="location"/>
-				</div>
-				<div>
-					<input value="Submit" type="submit"/>
-					<input value="Clear" type="reset"/>
-				</div>
-			</form>
+			<div>
+				Location: <input type="text" id="location" name="location"/>
+			</div>
+			<div>
+				<button id="submit" onclick="clickSubmit()">Submit!</button>
+			</div>
 		</div>
 		<h2><a href="#two">Auto</a></h2>
 		<div>
 			<div class="autolocate">Try Automatic Location</div>
-			<div class="zip"></div>
-			<div class="town"></div>
 			<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 		</div>
 	</div>
+	<div>Town: <span class="town"></span></div>
+	<div>Zip Code: <span class="zip"></span></div>
+	<div>Latitude: <span class="lat"></span></div>
+	<div>Longitude: <span class="long"></span></div>
 	<script>
 		var accOpts = {
 			active: false
 		};
+		
+		function clickSubmit(){
+			var locale = $("#location").val();
+			var inpts = locale.split(" ");
+			var inptf = inpts[0];
+			for (i = 1; i < inpts.length; i++){
+				inptf = inptf + "%2B" + inpts[i];
+			}
+		
+			var locurl =
+				"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
+				+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
+				
+			var zip = null;
+			$.getJSON(locurl, function(locResponse) {
+				if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
+					processLatLong(locResponse.query.results.json.results.geometry.location.lat, 
+						locResponse.query.results.json.results.geometry.location.lng);
+				} else {
+					alert("Unable to process location! Try again or use locate me!");
+				}
+			});
+		}
 		
 		function clickLocate(){
 			navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
@@ -47,8 +69,7 @@
 		
 		//called when geolocation fails
 		function successCallback(position){
-			alert("GeoLocation succeeded! ");
-			$('div.autolocate').html("<div>Long:"+position.coords.longitude+"</div><div>Lat:"+position.coords.latitude+"</div>");
+			$('div.autolocate').html("<div>Geolocation Suceeded</div>");
 			processLatLong(position.coords.latitude, position.coords.longitude);
 		}
 		
@@ -59,6 +80,8 @@
 		}
 		
 		function processLatLong(lat, lng){
+			$('span.lat').html(lat);
+			$('span.long').html(lng);
 			var zipurl =
 				"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Flatlng%3D" 
 				+ lat + "%2C" + lng + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
@@ -85,8 +108,8 @@
 					//Any errors we can ignore
 				}
 				if (country == "US" && zip != null){
-					$('div.town').html(town);
-					$('div.zip').html(zip);
+					$('span.town').html(town);
+					$('span.zip').html(zip);
 				} else {
 					alert("Sorry! Unable to process your location.");
 				}
