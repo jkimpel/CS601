@@ -30,15 +30,14 @@
 		<h2><a href="#two">Auto</a></h2>
 		<div>
 			<div class="autolocate">Try Automatic Location</div>
+			<div class="zip"></div>
+			<div class="town"></div>
 			<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 		</div>
 	</div>
 	<script>
 		var accOpts = {
-			active: false;
-			fillSpace: true,
-			navigation: true,
-			autoheight:false
+			active: false
 		};
 		
 		function clickLocate(){
@@ -50,6 +49,7 @@
 		function successCallback(position){
 			alert("GeoLocation succeeded! ");
 			$('div.autolocate').html("<div>Long:"+position.coords.longitude+"</div><div>Lat:"+position.coords.latitude+"</div>");
+			processLatLong(position.coords.latitude, position.coords.longitude);
 		}
 		
 		//called when geolocation fails
@@ -57,6 +57,42 @@
 			alert("GeoLocation failed! " + error.message);
 			$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
 		}
+		
+		function processLatLong(lat, lng){
+			var zipurl =
+				"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Flatlng%3D" 
+				+ lat + "%2C" + lng + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
+			var zip = null;
+			var town = null;
+			var country = null;
+			$.getJSON(zipurl, function(zipResponse) {
+				try{
+					for (var i = 0; i < zipResponse.query.results.json.results.length; i++){
+						for (var j = 0; j < zipResponse.query.results.json.results[i].address_components.length; j++){
+							if (zipResponse.query.results.json.results[i].address_components[j].types[0] == "country"){
+								country = zipResponse.query.results.json.results[i].address_components[j].short_name;
+							}
+							if (zipResponse.query.results.json.results[i].address_components[j].types == "postal_code"){
+								zip = zipResponse.query.results.json.results[i].address_components[j].long_name;
+							}
+						}
+						if (zipResponse.query.results.json.results[i].types[0] == "administrative_area_level_3" ||
+							zipResponse.query.results.json.results[i].types[0] == "locality"){
+								town = zipResponse.query.results.json.results[i].formatted_address;
+						}
+					}
+				} catch (err){
+					//Any errors we can ignore
+				}
+				if (country == "US" && zip != null){
+					$('div.town').html(town);
+					$('div.zip').html(zip);
+				} else {
+					alert("Sorry! Unable to process your location.");
+				}
+			});
+		}
+		
 		(function($){		
 			$("#myAccordion").accordion(accOpts);
 		})(jQuery);
