@@ -1,0 +1,63 @@
+/*
+	Joe Kimpel
+*/
+body{
+	background-color: lightgray;
+}
+h1, h2{
+	margin-left:auto;
+	margin-right:auto;
+	width:70%;
+	text-align: center;
+	padding: 15px;
+	border: 1px solid black;
+	border-radius:15px;
+	background-color: lightblue;
+}
+table{
+	margin-left:auto;
+	margin-right:auto;
+	padding: 10px;
+	width:70%;
+	background-color: lightgreen;
+}
+table, th, td{
+	border: 1px solid black;
+	border-radius:5px;
+}
+th, td{
+	padding: 10px 20px;
+}
+th{
+	background-color: cyan;
+}
+td{
+	background-color: plum;
+}
+div.form{
+	padding: 10px 20px;
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+	background-color:lightgreen;
+	margin-left:auto;
+	margin-right:auto;
+	width: 20%;
+}
+div.back{	
+	padding: 10px 20px;
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+	background-color:teal;
+	margin-left:auto;
+	margin-right:auto;
+	width: 20%;
+}
+div.footer{
+	margin-left:auto;
+	margin-right:auto;
+	width: 50%;
+	padding: 10px 20px;
+	text-align: center;
+}

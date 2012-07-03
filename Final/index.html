@@ -4,12 +4,18 @@
 	<meta charset="utf-8">
 	<title>Meeting Finder</title>
 	<link rel="stylesheet" href="jquery-ui-1.8.21.custom/css/ui-lightness/jquery-ui-1.8.21.custom.css">
+	<style>
+		.myAccordion {
+			width: 50%;
+			margin: auto;
+		}
+	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.js"></script>
 </head>
 <body>
 	<div id="myAccordion">
-		<h2><a href="#one">One</a></h2>
+		<h2><a href="#one">Manual</a></h2>
 		<div>
 			<form name="find_meeting" action="find_meeting.php" method="get">
 				<div>
@@ -21,41 +27,39 @@
 				</div>
 			</form>
 		</div>
-		<h2><a href="#two">Two</a></h2>
+		<h2><a href="#two">Auto</a></h2>
 		<div>
 			<div class="autolocate">Try Automatic Location</div>
 			<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
-		</div
+		</div>
 	</div>
-	
 	<script>
-			(function($){
-				var accOpts = {
-					fillSpace: true,
-					navigation: true;
-					autoheight:false
-				};
-				
-				$("#myAccordion").accordion(accOpts);
-				
-				function clickLocate(){
-					navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-					$('div.autolocate').html("<div>Attempting geolocation...</div>");
-				}
-				
-				//called when geolocation fails
-				function successCallback(position){
-					alert("GeoLocation succeeded! ");
-					$('div.autolocate').html("<div>Long:"+position.coords.longitude+"</div><div>Lat:"+position.coords.latitude+"</div>");
-				}
-				
-				//called when geolocation fails
-				function errorCallback(error){
-					alert("GeoLocation failed! " + error.message);
-					$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
-				}
-				
-			})(jQuery);
+		var accOpts = {
+			active: false;
+			fillSpace: true,
+			navigation: true,
+			autoheight:false
+		};
+		
+		function clickLocate(){
+			navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+			$('div.autolocate').html("<div>Attempting geolocation...</div>");
+		}
+		
+		//called when geolocation fails
+		function successCallback(position){
+			alert("GeoLocation succeeded! ");
+			$('div.autolocate').html("<div>Long:"+position.coords.longitude+"</div><div>Lat:"+position.coords.latitude+"</div>");
+		}
+		
+		//called when geolocation fails
+		function errorCallback(error){
+			alert("GeoLocation failed! " + error.message);
+			$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
+		}
+		(function($){		
+			$("#myAccordion").accordion(accOpts);
+		})(jQuery);
 	</script>
 </body>
 </html>
