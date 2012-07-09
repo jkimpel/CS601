@@ -36,6 +36,23 @@
   				break;
   			}
 		}
+		
+		//convert a value to radians
+		function rad($val){
+			return $val * pi() / 180;
+		}
+		
+		//calculate distance from two points
+		// based on http://stackoverflow.com/questions/27928/how-do-i-calculate-distance-between-two-latitude-longitude-points
+		function distance($lat1, $lng1, $lat2, $lng2){
+			$r = 3959; //Radius of earth in miles
+			$dlat = rad($lat2 - $lat1);
+			$dlng = rad($lng2 - $lng1);
+			$a = pow(sin($dlat/2), 2) + cos(rad($lat1))*cos(rad($lat2))*pow(sin($dlng/2), 2);
+			$c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+			$d  = $c * $r;
+			return $d;		
+		}
 	
 		$con = mysql_connect("localhost","736253_root","cs601");
 		if (!$con)
@@ -47,6 +64,10 @@
 		
 		$day = $_GET['day'];
 		$isOpen = $_GET['isOpen'];
+		$lat = $_GET['lat'];
+		$lng = $_GET['long'];
+		
+		$dist = (($lat != 0) && ($lng != 0));
 		
 		$qstring = "SELECT * FROM Meeting";
 		//$whered is a boolean, whether or not a where clause has been appended
@@ -78,16 +99,35 @@
 		
 		$result = mysql_query($qstring);	
 		
-		$count = 0;
+		$rows = array();
+		
+		if ($dist)
+			$dists = array();
+			
+		while($row = mysql_fetch_array($result))
+		{
+			array_push($rows, $row);
+			if ($dist)
+				array_push($dists, distance($row['Latitude'], $row['Longitude'], $lat, $lng));
+		}
+		
+		if ($dist){
+			$rowswithd = array_combine($dists, $rows);
+			ksort($rowswithd);
+			$rows = array_values($rowswithd);
+		}
 		
 		echo "<table>\n";
 		
 		echo "\t\t<tr>\n\t\t\t<th>Name</th>\n\t\t\t<th>Day</th>\n\t\t\t<th>Time</th>\n";
-		echo "\t\t\t<th>Address</th>\n\t\t\t<th>Zip</th>\n\t\t\t<th>Open?</th>\n\t\t</tr>\n";
+		echo "\t\t\t<th>Address</th>\n\t\t\t<th>Zip</th>\n\t\t\t<th>Open?</th>\n";
+		if ($dist)
+			echo "\t\t\t<th>Distance</th>\n\t\t</tr>\n";
+		else
+			echo "\t\t</tr>\n";
 		
-		while($row = mysql_fetch_array($result))
-  		{
-  			$count++;
+		for($i = 0; $i < count($rows); $i++){
+			$row = $rows[$i];
   			echo "\t\t<tr>\n";
   			echo "\t\t\t<td>" . $row['Name'] . "</td>\n";
   			echo "\t\t\t<td>" . dayOfWeek($row['Day']) . "</td>\n";
@@ -102,12 +142,18 @@
   			{
   				echo "\t\t\t<td>Closed</td>\n";
   			}
+  			if ($dist){
+  				echo "\t\t\t<td>";
+  				printf("%.2f miles", distance($row['Latitude'], $row['Longitude'], $lat, $lng));
+  				echo "</td>\n";
+  			}
   			echo "\t\t</tr>\n";
-  		}
-  		
-  		echo "\t</table>\n";
-  		
-  		if ($count==0){
+		}
+
+		echo "\t</table>\n";
+		
+  		$count = count($rows);
+  		if ($count == 0){
   			echo "<h2>I couldn't find any meetings!</h2>";
   		} else{
   			echo "<h2>Returned " . $count . " results</h2>";
@@ -115,7 +161,7 @@
 
 mysql_close($con);
 ?>
-	<div class="back"><a href="nerna.html">Try another Search</a></div>
+	<div class="back"><a href="index.html">Try another Search</a></div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
 </body>

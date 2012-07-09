@@ -4,121 +4,62 @@
 	<meta charset="utf-8">
 	<title>Meeting Finder</title>
 	<link rel="stylesheet" href="jquery-ui-1.8.21.custom/css/ui-lightness/jquery-ui-1.8.21.custom.css">
-	<style>
-		.myAccordion {
-			width: 50%;
-			margin: auto;
-		}
-	</style>
+	<link href="nerna_style.css" type="text/css" rel="stylesheet"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.js"></script>
+  	<script src="nerna.js"></script>
 </head>
 <body>
-	<div id="myAccordion">
-		<h2><a href="#one">Manual</a></h2>
-		<div>
+	<h1>Welcome to my NA Meeting Search!</h1>
+	<div class='form'>
+		<div id="myAccordion">
+			<h2><a href="#one">Manual Location</a></h2>
 			<div>
-				Location: <input type="text" id="location" name="location"/>
+				<div>
+					Location: <input type="text" id="location" name="location"/>
+				</div>
+				<div>
+					<button id="submit" onclick="clickSubmit()">Submit!</button>
+				</div>
 			</div>
+			<h2><a href="#two">Auto-Location</a></h2>
 			<div>
-				<button id="submit" onclick="clickSubmit()">Submit!</button>
+				<div class="autolocate">Try Automatic Location</div>
+				<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 			</div>
-		</div>
-		<h2><a href="#two">Auto</a></h2>
-		<div>
-			<div class="autolocate">Try Automatic Location</div>
-			<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 		</div>
 	</div>
+	<form method="get" action="meetings.php">
+		<div class='form'>Choose a day:
+			<select name="day">
+				<option value="7">Show All</option>
+				<option value="0">Sunday</option>
+				<option value="1">Monday</option>
+				<option value="2">Tuesday</option>
+				<option value="3">Wednesday</option>
+				<option value="4">Thursday</option>
+				<option value="5">Friday</option>
+				<option value="6">Saturday</option>
+			</select>
+		</div>
+		<div class='form'>Type of Meeting:
+			<select name="isOpen">
+				<option value="either">Either</option>
+				<option value="open">Open</option>
+				<option value="closed">Closed</option>
+			</select>
+		</div>
+		<input name="lat" id="lat" type="hidden" value="0"/>
+		<input name="long" id="long" type="hidden" value="0"/>
+		<div class='form'>
+			<button type="submit">Search!</button>
+		</div>
+	</form>
 	<div>Town: <span class="town"></span></div>
 	<div>Zip Code: <span class="zip"></span></div>
 	<div>Latitude: <span class="lat"></span></div>
 	<div>Longitude: <span class="long"></span></div>
-	<script>
-		var accOpts = {
-			active: false
-		};
-		
-		function clickSubmit(){
-			var locale = $("#location").val();
-			var inpts = locale.split(" ");
-			var inptf = inpts[0];
-			for (i = 1; i < inpts.length; i++){
-				inptf = inptf + "%2B" + inpts[i];
-			}
-		
-			var locurl =
-				"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
-				+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
-				
-			var zip = null;
-			$.getJSON(locurl, function(locResponse) {
-				if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
-					processLatLong(locResponse.query.results.json.results.geometry.location.lat, 
-						locResponse.query.results.json.results.geometry.location.lng);
-				} else {
-					alert("Unable to process location! Try again or use locate me!");
-				}
-			});
-		}
-		
-		function clickLocate(){
-			navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-			$('div.autolocate').html("<div>Attempting geolocation...</div>");
-		}
-		
-		//called when geolocation fails
-		function successCallback(position){
-			$('div.autolocate').html("<div>Geolocation Suceeded</div>");
-			processLatLong(position.coords.latitude, position.coords.longitude);
-		}
-		
-		//called when geolocation fails
-		function errorCallback(error){
-			alert("GeoLocation failed! " + error.message);
-			$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
-		}
-		
-		function processLatLong(lat, lng){
-			$('span.lat').html(lat);
-			$('span.long').html(lng);
-			var zipurl =
-				"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Flatlng%3D" 
-				+ lat + "%2C" + lng + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
-			var zip = null;
-			var town = null;
-			var country = null;
-			$.getJSON(zipurl, function(zipResponse) {
-				try{
-					for (var i = 0; i < zipResponse.query.results.json.results.length; i++){
-						for (var j = 0; j < zipResponse.query.results.json.results[i].address_components.length; j++){
-							if (zipResponse.query.results.json.results[i].address_components[j].types[0] == "country"){
-								country = zipResponse.query.results.json.results[i].address_components[j].short_name;
-							}
-							if (zipResponse.query.results.json.results[i].address_components[j].types == "postal_code"){
-								zip = zipResponse.query.results.json.results[i].address_components[j].long_name;
-							}
-						}
-						if (zipResponse.query.results.json.results[i].types[0] == "administrative_area_level_3" ||
-							zipResponse.query.results.json.results[i].types[0] == "locality"){
-								town = zipResponse.query.results.json.results[i].formatted_address;
-						}
-					}
-				} catch (err){
-					//Any errors we can ignore
-				}
-				if (country == "US" && zip != null){
-					$('span.town').html(town);
-					$('span.zip').html(zip);
-				} else {
-					alert("Sorry! Unable to process your location.");
-				}
-			});
-		}
-		
-		(function($){		
-			$("#myAccordion").accordion(accOpts);
-		})(jQuery);
-	</script>
+	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
+	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
 </body>
 </html>
