@@ -144,8 +144,9 @@
   			}
   			if ($dist){
   				echo "\t\t\t<td>";
+  				echo "<a target='_blank' href='https://maps.google.com/maps?saddr=".$lat.",".$lng."&daddr=".$row['Latitude'].",".$row['Longitude']."'>";
   				printf("%.2f miles", distance($row['Latitude'], $row['Longitude'], $lat, $lng));
-  				echo "</td>\n";
+  				echo "</a></td>\n";
   			}
   			echo "\t\t</tr>\n";
 		}
