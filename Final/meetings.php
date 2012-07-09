@@ -133,7 +133,7 @@
   			echo "\t\t\t<td>" . dayOfWeek($row['Day']) . "</td>\n";
   			echo "\t\t\t<td> " . $row['Time'] . "</td>\n";
   			echo "\t\t\t<td> " . $row['Address'] . "</td>\n";
-  			echo "\t\t\t<td> " . $row['Zip'] . "</td>\n";
+  			echo "\t\t\t<td> " . sprintf("%05d",$row['Zip']) . "</td>\n";
   			if ($row['IsOpen']==1)
   			{
   				echo "\t\t\t<td>Open</td>\n";
