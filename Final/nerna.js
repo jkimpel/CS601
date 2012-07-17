@@ -152,6 +152,12 @@ function locFromHistory(index){
 	$('#long').val(hlng);
 	$('span.town').html(hname);
 }
+
+function ajaxTable(){
+	$.get("meetings_ajax.php", $("form").serialize(), function(data){
+		$("#results").html(data);
+	});
+}
 			
 
 $(document).ready(function() {
