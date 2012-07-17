@@ -98,7 +98,7 @@
 			}
 		}
 		
-		echo "<h2>" . $qstring . "</h2>";
+		//echo "<h2>" . $qstring . "</h2>";
 		
 		$result = mysql_query($qstring);	
 		
@@ -122,9 +122,7 @@
 		
 		if ($dist){
 			$rowswithd = array_combine($indexes, $dists);
-			echo "count rwd:" . count($rowswithd) . "\n";
 			asort($rowswithd, SORT_NUMERIC);
-			echo "count rwd:" . count($rowswithd) . "\n";
 			$indexes = array_keys($rowswithd);
 		}
 		
@@ -169,11 +167,8 @@
 		
   		$count = count($rows);
   		if ($count == 0){
-  			echo "<h2>I couldn't find any meetings!</h2>";
-  		} else{
-  			echo "<h2>Returned " . $count . " results</h2>";
-  		}
-  		echo date("l w", time());
+  			echo "<h3>I couldn't find any meetings!</h3>";
+  		} 
 
 mysql_close($con);
 ?>
