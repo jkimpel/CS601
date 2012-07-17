@@ -1,0 +1,20 @@
+/*
+ *	Joe Kimpel
+ *	CS 601
+ *	HW 3
+ *
+ */
+ 
+.wrappedElement {
+	border: 1px solid red;
+	background-color: cyan;
+}
+
+img.wrappedElement {
+	border-color: brown;
+	border-width: 4px;
+}
+
+div.wrappedElement {
+	padding: 5;
+}
