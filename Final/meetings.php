@@ -77,6 +77,9 @@
 		{
 			$qstring = $qstring . " Where Day = '$day'";
 			$whered = true;
+		} else {
+			$qstring = $qstring . " Where Day = '".date("w")."'";
+			$whered = true;
 		}
 		
 		if ($isOpen=="open"){
@@ -101,39 +104,50 @@
 		
 		$rows = array();
 		
-		if ($dist)
+		if ($dist){
 			$dists = array();
-			
+			$indexes = array();
+			$num = 0;
+		}
+		
 		while($row = mysql_fetch_array($result))
 		{
 			array_push($rows, $row);
-			if ($dist)
+			if ($dist){
 				array_push($dists, distance($row['Latitude'], $row['Longitude'], $lat, $lng));
+				array_push($indexes, $num);	
+				$num++;
+			}
 		}
 		
 		if ($dist){
-			$rowswithd = array_combine($dists, $rows);
-			ksort($rowswithd);
-			$rows = array_values($rowswithd);
+			$rowswithd = array_combine($indexes, $dists);
+			echo "count rwd:" . count($rowswithd) . "\n";
+			asort($rowswithd, SORT_NUMERIC);
+			echo "count rwd:" . count($rowswithd) . "\n";
+			$indexes = array_keys($rowswithd);
 		}
 		
 		echo "<table>\n";
 		
 		echo "\t\t<tr>\n\t\t\t<th>Name</th>\n\t\t\t<th>Day</th>\n\t\t\t<th>Time</th>\n";
-		echo "\t\t\t<th>Address</th>\n\t\t\t<th>Zip</th>\n\t\t\t<th>Open?</th>\n";
+		echo "\t\t\t<th>Address</th>\n\t\t\t<th>Town</th>\n\t\t\t<th>Open?</th>\n";
 		if ($dist)
 			echo "\t\t\t<th>Distance</th>\n\t\t</tr>\n";
 		else
 			echo "\t\t</tr>\n";
 		
 		for($i = 0; $i < count($rows); $i++){
-			$row = $rows[$i];
+			if ($dist)
+				$row = $rows[$indexes[$i]];
+			else
+				$row = $rows[$i];
   			echo "\t\t<tr>\n";
   			echo "\t\t\t<td>" . $row['Name'] . "</td>\n";
   			echo "\t\t\t<td>" . dayOfWeek($row['Day']) . "</td>\n";
-  			echo "\t\t\t<td> " . $row['Time'] . "</td>\n";
+  			echo "\t\t\t<td> " . date("g:ia", strtotime($row['Time'])) . "</td>\n";
   			echo "\t\t\t<td> " . $row['Address'] . "</td>\n";
-  			echo "\t\t\t<td> " . sprintf("%05d",$row['Zip']) . "</td>\n";
+  			echo "\t\t\t<td> " . $row['Town'] . "</td>\n";
   			if ($row['IsOpen']==1)
   			{
   				echo "\t\t\t<td>Open</td>\n";
@@ -159,6 +173,7 @@
   		} else{
   			echo "<h2>Returned " . $count . " results</h2>";
   		}
+  		echo date("l w", time());
 
 mysql_close($con);
 ?>

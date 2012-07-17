@@ -75,12 +75,86 @@ function processLatLong(lat, lng){
 		if (country == "US" && zip != null){
 			$('span.town').html(town);
 			$('span.zip').html(zip);
+			updateHistory(lat, lng, town);
 		} else {
 			alert("Sorry! Unable to process your location.");
 		}
 	});
 }
 
+function updateHistory(lat, lng, town){
+
+	if ((town != localStorage.recentName0) && 
+		(town != localStorage.recentName1) && 
+		(town != localStorage.recentName2)){
+		localStorage.recentName2 = localStorage.recentName1;
+		localStorage.recentLat2 = localStorage.recentLat1;
+		localStorage.recentLng2 = localStorage.recentLng1;
+		localStorage.recentName1 = localStorage.recentName0;
+		localStorage.recentLat1 = localStorage.recentLat0;
+		localStorage.recentLng1 = localStorage.recentLng0;
+		localStorage.recentName0 = town;
+		localStorage.recentLat0 = lat;
+		localStorage.recentLng0 = lng;
+		refreshHistory();
+	}
+}
+
+//Clear the user's search history
+function clearHistory(){
+	localStorage.recentName0 = "undefined";
+	localStorage.recentName1 = "undefined";
+	localStorage.recentName2 = "undefined";
+	refreshHistory();
+}
+
+//Display the history
+function refreshHistory(){
+	var nameHistory = new Array(3);
+	nameHistory[0] = localStorage.recentName0;
+	nameHistory[1] = localStorage.recentName1;
+	nameHistory[2] = localStorage.recentName2;
+	if (nameHistory[0] == null || nameHistory[0] == "undefined"){
+		$('ul.recent').html("<li>No recent locations!</li>");
+	} else{
+		$('ul.recent').html("");
+		for (i = 0; i < 3; i++){
+			if (nameHistory[i] != null && nameHistory[i] != "undefined"){
+				$("ul.recent").append("<li><button onclick=\"locFromHistory('" + i + 
+										"')\">" + nameHistory[i] + "</button></li>");
+			}
+		}
+	}
+}
+
+function locFromHistory(index){
+	var hlat, hlng, hname;
+	switch (index){
+		case '0':
+			hlat = localStorage.recentLat0;
+			hlng = localStorage.recentLng0;
+			hname = localStorage.recentName0;
+		break;
+		case '1':
+			hlat = localStorage.recentLat1;
+			hlng = localStorage.recentLng1;
+			hname = localStorage.recentName1;
+		break;
+		case '2':
+			hlat = localStorage.recentLat2;
+			hlng = localStorage.recentLng2;
+			hname = localStorage.recentName2;
+		break;
+	}
+	$('span.lat').html(hlat);
+	$('span.long').html(hlng);
+	$('#lat').val(hlat);
+	$('#long').val(hlng);
+	$('span.town').html(hname);
+}
+			
+
 $(document).ready(function() {
 	$("#myAccordion").accordion(accOpts);
+	refreshHistory();
 });

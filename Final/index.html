@@ -27,12 +27,21 @@
 				<div class="autolocate">Try Automatic Location</div>
 				<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 			</div>
+			<h2><a href="#three">Recent Locations</a></h2>
+			<div>
+				<div class="recent">Recent Locations:</div>
+				<ul class="recent">
+					<li>No recent locations!</li>
+				</ul>
+				<div><button id="clear" onclick="clearHistory()">Clear History</button></div>
+			</div>
 		</div>
+		<div>Location: <span class="town">None</span></div>
 	</div>
 	<form method="get" action="meetings.php">
 		<div class='form'>Choose a day:
 			<select name="day">
-				<option value="7">Show All</option>
+				<option value="7">Today</option>
 				<option value="0">Sunday</option>
 				<option value="1">Monday</option>
 				<option value="2">Tuesday</option>
