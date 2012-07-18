@@ -1,6 +1,5 @@
 <?php
 	function dayOfWeek($d){
-	
 		$days = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 		return $days[$d];
 	}
@@ -63,8 +62,6 @@
 		}
 	}
 	
-	//echo "<h2>" . $qstring . "</h2>";
-	
 	$result = mysql_query($qstring);	
 	
 	$rows = array();
@@ -90,16 +87,22 @@
 		asort($rowswithd, SORT_NUMERIC);
 		$indexes = array_keys($rowswithd);
 	}
-	
-	echo "<table>\n";
-	
-	echo "\t\t<tr>\n\t\t\t<th>Name</th>\n\t\t\t<th>Day</th>\n\t\t\t<th>Time</th>\n";
-	echo "\t\t\t<th>Address</th>\n\t\t\t<th>Town</th>\n\t\t\t<th>Open?</th>\n";
-	if ($dist)
-		echo "\t\t\t<th>Distance</th>\n\t\t</tr>\n";
+?>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Day</th>
+			<th>Time</th>
+			<th>Address</th>
+			<th>Town</th>
+			<th>Open?</th>
+			
+<?php 
+	if ($dist) 
+		echo "<th>Distance</th></tr>";
 	else
-		echo "\t\t</tr>\n";
-	
+		echo "</tr>";
+
 	for($i = 0; $i < count($rows); $i++){
 		if ($dist)
 			$row = $rows[$indexes[$i]];
