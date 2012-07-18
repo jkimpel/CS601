@@ -68,10 +68,7 @@
 	{
 		$qstring = $qstring . " Where Day = '$day'";
 		$whered = true;
-	} else {
-		$qstring = $qstring . " Where Day = '".date("w")."'";
-		$whered = true;
-	}
+	} 
 	
 	if ($isOpen=="open"){
 		if ($whered)
@@ -111,7 +108,7 @@
 		}
 	}
 	
-	if ($dist){
+	if (($dist)&&($num>0)){
 		$rowswithd = array_combine($indexes, $dists);
 		asort($rowswithd, SORT_NUMERIC);
 		$indexes = array_keys($rowswithd);

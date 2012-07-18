@@ -30,19 +30,18 @@
 			</div>
 			<h2><a href="#three">Recent Locations</a></h2>
 			<div>
-				<div class="recent">Recent Locations:</div>
-				<ul class="recent">
-					<li>No recent locations!</li>
-				</ul>
+				<div class="recent">
+					<div>No recent locations!</div>
+				</div>
 				<div><button id="clear" onclick="clearHistory()">Clear History</button></div>
 			</div>
 		</div>
 		<div>Location: <span class="town">None</span></div>
 	</div>
-	<form id="query" method="get" action="meetings.php">
+	<form id="query">
 		<div class='form'>Choose a day:
-			<select name="day">
-				<option value="7">Today</option>
+			<select class="submitter" id="day" name="day">
+				<option value="7">Any Day</option>
 				<option value="0">Sunday</option>
 				<option value="1">Monday</option>
 				<option value="2">Tuesday</option>
@@ -53,7 +52,7 @@
 			</select>
 		</div>
 		<div class='form'>Type of Meeting:
-			<select name="isOpen">
+			<select class="submitter" name="isOpen">
 				<option value="either">Either</option>
 				<option value="open">Open</option>
 				<option value="closed">Closed</option>
@@ -61,11 +60,10 @@
 		</div>
 		<input name="lat" id="lat" type="hidden" value="0"/>
 		<input name="long" id="long" type="hidden" value="0"/>
-		<div class='form'>
-			<button type="submit">Search!</button>
-		</div>
 	</form>
-	<button onclick="ajaxTable()">Search (Ajax)</button>
+	<div class='form'>
+		<button onclick="ajaxTable()">Search!</button>
+	</div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
 </body>

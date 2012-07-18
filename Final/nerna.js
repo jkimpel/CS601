@@ -1,5 +1,6 @@
 var accOpts = {
-	active: false
+	active: false,
+	collapsible: true
 };
 
 function clickSubmit(){
@@ -75,6 +76,7 @@ function processLatLong(lat, lng){
 		if (country == "US" && zip != null){
 			$('span.town').html(town);
 			$('span.zip').html(zip);
+			ajaxTable();
 			updateHistory(lat, lng, town);
 		} else {
 			alert("Sorry! Unable to process your location.");
@@ -115,13 +117,13 @@ function refreshHistory(){
 	nameHistory[1] = localStorage.recentName1;
 	nameHistory[2] = localStorage.recentName2;
 	if (nameHistory[0] == null || nameHistory[0] == "undefined"){
-		$('ul.recent').html("<li>No recent locations!</li>");
+		$('div.recent').html("<div>No recent locations!</div>");
 	} else{
-		$('ul.recent').html("");
+		$('div.recent').html("");
 		for (i = 0; i < 3; i++){
 			if (nameHistory[i] != null && nameHistory[i] != "undefined"){
-				$("ul.recent").append("<li><button onclick=\"locFromHistory('" + i + 
-										"')\">" + nameHistory[i] + "</button></li>");
+				$("div.recent").append("<div><button onclick=\"locFromHistory('" + i + 
+										"')\">" + nameHistory[i] + "</button></div>");
 			}
 		}
 	}
@@ -151,6 +153,7 @@ function locFromHistory(index){
 	$('#lat').val(hlat);
 	$('#long').val(hlng);
 	$('span.town').html(hname);
+	ajaxTable();
 }
 
 function ajaxTable(){
@@ -158,9 +161,22 @@ function ajaxTable(){
 		$("#results").html(data);
 	});
 }
+
+function setToday(){
+	var d = new Date();
+	var today = d.getDay();
+	var tomorrow = (today + 1) % 7;
+	$("#day").val(today);
+	$("option[value="+today+"]").html("Today");
+	$("option[value="+tomorrow+"]").html("Tomorrow");
+}
 			
 
 $(document).ready(function() {
-	$("#myAccordion").accordion(accOpts);
 	refreshHistory();
+	setToday();
+	$("#myAccordion").accordion(accOpts);
+	$(".submitter").change(function(){
+		ajaxTable();
+	});
 });

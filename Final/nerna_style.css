@@ -61,3 +61,6 @@ div.footer{
 	padding: 10px 20px;
 	text-align: center;
 }
+div.recent button{
+	font-size: 80%;
+}
