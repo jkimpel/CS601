@@ -2,6 +2,7 @@
  *	Joe Kimpel
  *	CS 601
  *	6.12.12
+ *	Updated 7.21.12 for HW5
  *
  */
 
@@ -95,4 +96,12 @@ table, td{
 
 td{
 	text-align: center;
+}
+
+span.pass{
+	background-color: green;
+}
+
+span.fail{
+	background-color: red;
 }

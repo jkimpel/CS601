@@ -1,0 +1,39 @@
+<!doctype html>
+<!--
+	Joe Kimpel
+	HW5
+	CS 601
+	7.21.2012
+-->
+<html lang="en">
+<head>
+	<title>Joe K's Homework 5</title>
+	<meta charset="utf-8"/>
+	<link href="style.css" type="text/css" rel="stylesheet"/>
+	<script src="script.js"></script>
+</head>
+<body>
+	<h2>Homework 5</h2>
+		<form name="feedbackForm" id="feedbackForm" action="hw5.php" method="get" onSubmit="return  validate(this)">
+			<div>
+				Name:
+				<input name="name" id="name" type="text"/>
+			</div>
+			<div>
+				Zip Code:
+				<input name="zip" id="zip" type="text"/>
+			</div>
+			<div>
+				Email Address:
+				<input name="emailAddress" id="emailAddress" type="text"/>
+			</div>
+			<div>
+				<input value="Submit" type="submit"/>
+				<input value="Clear" type="reset"/>
+			</div>
+		</form>
+
+	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
+	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
+</body>
+</html>
