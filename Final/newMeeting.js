@@ -1,17 +1,17 @@
-function validate(form){
+function validate(){
 	var namePattern= /^.{3,}$/g;
-	if  (!namePattern.test(form.name.value)) {
+	if  (!namePattern.test($("#name").val())) {
 		alert("Please enter at least a three character name.");
 		form.name.focus();
   		return  false;
  	}
 	var timePattern= /^(0?[1-9]|1[012])(:[0-5]\d)?(am|AM|pm|PM)?$/g;
-	if  (!timePattern.test(form.time.value)) {
+	if  (!timePattern.test($("#time").val())) {
 		alert("Please enter a valid time.");
 		form.time.focus();
   		return  false;
  	}
- 	var address = form.address.value + " " + form.town.value + ", MA";
+ 	var address = $("#address").val() + " " + $("#town").val() + ", MA";
  	var inpts = address.split(" ");
 	var inptf = inpts[0];
 	for (i = 1; i < inpts.length; i++){
@@ -23,22 +23,51 @@ function validate(form){
 		+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
 	$.getJSON(locurl, function(locResponse) {
 		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
-			$("#status").html("Success!");
-			$("#lat").val(locResponse.query.results.json.results.geometry.location.lat); 
-			$("#lng").val(locResponse.query.results.json.results.geometry.location.lng);
-			$("#dlat").html(locResponse.query.results.json.results.geometry.location.lat); 
-			$("#dlng").html(locResponse.query.results.json.results.geometry.location.lng);
+			var rlat = locResponse.query.results.json.results.geometry.location.lat;
+			var rlng = locResponse.query.results.json.results.geometry.location.lng;
+			$("#lat").val(rlat); 
+			$("#lng").val(rlng);
+			$("#status").html("Ready To Submit!");
+			$("#dmap").html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=16&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
+			$("#submitButton").show();
+			$("#editButton").show();
 		} else {
 			alert("Unable to process location! Try again!");
+			unfreeze();
 		}
 	});
-	$("#status").html("Working...");
+	freeze();
+	return false;
+}
+
+function freeze(){
+	$("#status").html("Looking Up Location...");
 	$("#name").attr('readonly', true);
 	$("#time").attr('readonly', true);
 	$("#address").attr('readonly', true);
 	$("#town").attr('readonly', true);
-	$("#name").attr('readonly', true);
-	$("#day").attr('readonly', 'readonly');
-	$("#isOpen").attr('readonly', 'readonly');
-	return false;
+	$("#validateButton").hide();
 }
+
+function unfreeze(){
+	$("#status").html("Awaiting Input");
+	$("#name").attr('readonly', false);
+	$("#time").attr('readonly', false);
+	$("#address").attr('readonly', false);
+	$("#town").attr('readonly', false);
+	$("#validateButton").show();
+	$("#editButton").hide();
+	$("#submitButton").hide();
+}
+
+$(function() {
+	$("button").button();
+	$("#validateButton").click(function(event){
+		event.preventDefault();
+		validate();
+	});
+	$("#editButton").click(function(event){
+		event.preventDefault();
+		unfreeze();
+	});
+});

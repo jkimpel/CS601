@@ -11,7 +11,7 @@
 </head>
 <body>
 	<h1>Add a new meeting</h1>
-	<form name='newMeetingForm' id='newMeetingForm' method="get" action="addMeeting.php" onsubmit="return validate(this)">
+	<form name='newMeetingForm' id='newMeetingForm' method="get" action="addMeeting.php">
 
 		<div class='form'>Meeting Name:
 			<input id='name' name='name' type='text'/>
@@ -44,11 +44,12 @@
 		</div>
 		<input type='hidden' id='lat' name='lat'/>
 		<input type='hidden' id='lng' name='lng'/>
-		<div id='dlat'></div>
-		<div id='dlng'></div>
+		<div class='form' id='dmap'></div>
 		<div class='form'>
 			<div id='status'></div>
-			<button>Validate!</button>
+			<button id='validateButton'>Validate!</button>
+			<button id='submitButton'>Submit</button>
+			<button id='editButton'>Edit</button>
 		</div>
 	</form>
 </body>
