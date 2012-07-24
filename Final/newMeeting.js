@@ -2,17 +2,31 @@ function validate(){
 	var namePattern= /^.{3,}$/g;
 	if  (!namePattern.test($("#name").val())) {
 		alert("Please enter at least a three character name.");
-		form.name.focus();
+		$("#name").focus();
   		return  false;
  	}
 	var timePattern= /^(0?[1-9]|1[012])(:[0-5]\d)?(am|AM|pm|PM)?$/g;
 	if  (!timePattern.test($("#time").val())) {
 		alert("Please enter a valid time.");
-		form.time.focus();
+		$("#time").focus();
   		return  false;
  	}
- 	var address = $("#address").val() + " " + $("#town").val() + ", MA";
- 	var inpts = address.split(" ");
+ 	var address = $("#address").val();
+ 	var addressPattern = /^.{3,}?/g;
+ 	if (!addressPattern.test(address)){
+ 		alert("Please enter at least a three character address.");
+ 		$("#address").focus();
+ 		return false;
+ 	}
+ 	var town = $("#town").val();
+ 	var townPattern = /^.{3,}?/g;
+ 	if (!townPattern.test(town)){
+ 		alert("Please enter at least a three character town.");
+ 		$("#town").focus();
+ 		return false;
+ 	}
+ 	var fullAddress = address + " " + town + ", MA";
+ 	var inpts = fullAddress.split(" ");
 	var inptf = inpts[0];
 	for (i = 1; i < inpts.length; i++){
 		inptf = inptf + "%2B" + inpts[i];
@@ -46,6 +60,8 @@ function freeze(){
 	$("#time").attr('readonly', true);
 	$("#address").attr('readonly', true);
 	$("#town").attr('readonly', true);
+	compactDaySelect();
+	compactIsOpenSelect();
 	$("#validateButton").hide();
 }
 
@@ -55,9 +71,44 @@ function unfreeze(){
 	$("#time").attr('readonly', false);
 	$("#address").attr('readonly', false);
 	$("#town").attr('readonly', false);
+	expandDaySelect();
+	expandIsOpenSelect();
 	$("#validateButton").show();
 	$("#editButton").hide();
 	$("#submitButton").hide();
+}
+
+function compactDaySelect(){
+	var state = $("#day").val();
+	$("#day").html("<option value='"+state+"'>"+dayOf(state)+"</option>");
+}
+
+function expandDaySelect(){
+	var state = $("#day").val();
+	$("#day").html("");
+	for (var i = 0; i < 7; i++){
+		$("#day").append("<option value='"+i+"'>"+dayOf(i)+"</option>");
+	}
+	$("#day").val(state);
+}
+
+function dayOf(num){
+	var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+	return days[num];
+}
+
+function compactIsOpenSelect(){
+	var state = $("#isOpen").val();
+	if (state == "1")
+		$("#isOpen").html("<option value='1'>Open</option>");
+	else
+		$("#isOpen").html("<option value='0'>Closed</option>");
+}
+
+function expandIsOpenSelect(){
+	var state = $("#isOpen").val();
+	$("#isOpen").html("<option value='open'>Open</option><option value='closed'>Closed</option>");
+	$("#isOpen").val(state);
 }
 
 $(function() {
