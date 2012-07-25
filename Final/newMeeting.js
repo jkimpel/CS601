@@ -107,7 +107,7 @@ function compactIsOpenSelect(){
 
 function expandIsOpenSelect(){
 	var state = $("#isOpen").val();
-	$("#isOpen").html("<option value='open'>Open</option><option value='closed'>Closed</option>");
+	$("#isOpen").html("<option value='1'>Open</option><option value='0'>Closed</option>");
 	$("#isOpen").val(state);
 }
 

@@ -33,6 +33,7 @@
 	$isOpen = $_GET['isOpen'];
 	$lat = $_GET['lat'];
 	$lng = $_GET['long'];
+	$admin = $_GET['admin'];
 	
 	$dist = (($lat != 0) && ($lng != 0));
 	
@@ -99,9 +100,12 @@
 			
 <?php 
 	if ($dist) 
-		echo "<th>Distance</th></tr>";
-	else
-		echo "</tr>";
+		echo "<th>Distance</th>";
+	
+	if ($admin)
+		echo "<th>Delete</th>";
+	
+	echo "</tr>";
 
 	for($i = 0; $i < count($rows); $i++){
 		if ($dist)
@@ -128,6 +132,13 @@
 			printf("%.2f miles", distance($row['Latitude'], $row['Longitude'], $lat, $lng));
 			echo "</a></td>\n";
 		}
+		if ($admin){
+			echo "\t\t\t<td>";
+			$fname = addslashes($row['Name']);
+			echo "<button onclick='deleteMeeting(".$row['id'].",\'".$fname."\')'>Delete!</button>";
+			echo "</td>";
+		}
+		
 		echo "\t\t</tr>\n";
 	}
 

@@ -7,12 +7,7 @@
 </head>
 <body>
 	<h1>Meeting Added!:</h1>
-	<?php
-		function formatTime($t){
-			$ft = date("H:i", strtotime($t));
-			return $ft;
-		}
-	
+	<?php	
 		$name = $_GET['name'];
 		$day = $_GET['day'];
 		$time = $_GET['time'];
@@ -22,11 +17,12 @@
 		$lat = $_GET['lat'];
 		$lng = $_GET['lng'];
 		
-		$formattedTime = formatTime($time);
+		$formattedTime = date("H:i", strtotime($time));
+		$formattedName = addslashes($name);
 		
 		$sql = "INSERT into Meeting (Name, Time, Day, Address, Town, IsOpen, Latitude, Longitude)
 		Values
-		('$name', '$formattedTime', '$day', '$address', '$town', '$isOpen', '$lat', '$lng');";
+		('$formattedName', '$formattedTime', '$day', '$address', '$town', '$isOpen', '$lat', '$lng');";
 		
 		$con = mysql_connect("localhost","736253_root","cs601");
 		if (!$con)

@@ -170,12 +170,30 @@ function setToday(){
 	$("option[value="+today+"]").html("Today");
 	$("option[value="+tomorrow+"]").html("Tomorrow");
 }
+
+function deleteMeeting(id, name){
+	$.get("deleteMeeting.php", "id="+id+"&name="+name, function(data){
+		ajaxTable();
+		alert(data);
+	});
+}
 			
 
 $(document).ready(function() {
 	refreshHistory();
 	setToday();
 	$("#myAccordion").accordion(accOpts);
+	$("#setAdmin").click(function(event){
+		event.preventDefault();
+		var admin = $("#admin").val();
+		if (admin != 0){
+			$("#admin").val(0);
+			$("#setAdmin").html("Enable Admin");
+		}else{
+			$("#admin").val(1);
+			$("#setAdmin").html("Disable Admin");
+		}
+	});
 	$(".submitter").change(function(){
 		ajaxTable();
 	});
