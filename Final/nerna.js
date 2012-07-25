@@ -159,6 +159,7 @@ function locFromHistory(index){
 function ajaxTable(){
 	$.get("meetings_ajax.php", $("form").serialize(), function(data){
 		$("#results").html(data);
+		$("button").button();
 	});
 }
 
@@ -171,16 +172,25 @@ function setToday(){
 	$("option[value="+tomorrow+"]").html("Tomorrow");
 }
 
-function deleteMeeting(id, name){
-	$.get("deleteMeeting.php", "id="+id+"&name="+name, function(data){
+function deleteMeeting(id){
+	$.get("deleteMeeting.php", "id="+id, function(data){
 		ajaxTable();
-		alert(data);
+		$("#deleteDialog").html(data);
+		$("#deleteDialog").dialog({
+			modal:true,
+			buttons: {
+				OK: function(){
+					$(this).dialog("close");
+				}	
+			}
+		});
 	});
 }
 			
 
 $(document).ready(function() {
 	refreshHistory();
+	$("button").button();
 	setToday();
 	$("#myAccordion").accordion(accOpts);
 	$("#setAdmin").click(function(event){

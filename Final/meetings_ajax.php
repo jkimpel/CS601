@@ -135,7 +135,7 @@
 		if ($admin){
 			echo "\t\t\t<td>";
 			$fname = addslashes($row['Name']);
-			echo "<button onclick='deleteMeeting(".$row['id'].",\'".$fname."\')'>Delete!</button>";
+			echo "<button onclick='deleteMeeting(".$row['id'].")'>Delete!</button>";
 			echo "</td>";
 		}
 		

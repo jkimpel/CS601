@@ -1,8 +1,9 @@
 <?php	
 		$id = $_GET['id'];
-		$name = $_GET['name'];
 		
-		$sql = "DELETE FROM Meeting where id = $id";
+		$sql1 = "SELECT * FROM Meeting where id = $id";
+		
+		$sql2 = "DELETE FROM Meeting where id = $id";
 		
 		$con = mysql_connect("localhost","736253_root","cs601");
 		if (!$con)
@@ -12,7 +13,12 @@
 
 		mysql_select_db("jkcs601_zxq_nerna", $con);
 		
-		if (!mysql_query($sql, $con)){
+		$result = mysql_query($sql1);	
+		$row = mysql_fetch_array($result);
+		
+		$name = $row['Name'];
+		
+		if (!mysql_query($sql2, $con)){
 			die('Unable to Delete: ' . mysql_error());
 		}
 		
