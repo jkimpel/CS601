@@ -113,6 +113,7 @@ function expandIsOpenSelect(){
 
 $(function() {
 	$("button").button();
+	$("a.linkButton").button();
 	$("#validateButton").click(function(event){
 		event.preventDefault();
 		validate();

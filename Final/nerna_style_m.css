@@ -3,11 +3,12 @@
 */
 body{
 	background-color: lightgray;
+	font-size: 200%;
 }
 h1, h3{
 	margin-left:auto;
 	margin-right:auto;
-	width:70%;
+	width:90%;
 	text-align: center;
 	padding: 15px;
 	border: 1px solid black;
@@ -20,7 +21,7 @@ h4{
 	margin-bottom: 0;
 	margin-left:auto;
 	margin-right:auto;
-	width:70%;
+	width:90%;
 	text-align: center;
 	border: 1px solid black;
 	border-radius:5px;
@@ -41,7 +42,7 @@ div.form{
 	background-color:lightgreen;
 	margin-left:auto;
 	margin-right:auto;
-	width: 40%;
+	width: 90%;
 }
 div.result{
 	padding: 10px 20px;
@@ -51,7 +52,7 @@ div.result{
 	background-color:lightgreen;
 	margin-left:auto;
 	margin-right:auto;
-	width: 50%;
+	width: 90%;
 }
 div.back{	
 	padding: 10px 20px;
@@ -61,12 +62,12 @@ div.back{
 	background-color:teal;
 	margin-left:auto;
 	margin-right:auto;
-	width: 20%;
+	width: 60%;
 }
 div.footer{
 	margin-left:auto;
 	margin-right:auto;
-	width: 50%;
+	width: 80%;
 	padding: 10px 20px;
 	text-align: center;
 }
@@ -75,4 +76,4 @@ div.recent button{
 }
 #submitButton{display:none;}
 #editButton{display:none;}
-#detect{display:none;}
+#detect{display:block;}

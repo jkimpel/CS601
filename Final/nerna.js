@@ -157,9 +157,12 @@ function locFromHistory(index){
 }
 
 function ajaxTable(){
-	$.get("meetings_ajax.php", $("form").serialize(), function(data){
+	$.get("meetings_acc.php", $("form").serialize(), function(data){
 		$("#results").html(data);
+		$("#dataAccordion").accordion(accOpts);
+		$("div.result").show();
 		$("button").button();
+		$("a.linkButton").button();
 	});
 }
 
@@ -186,13 +189,37 @@ function deleteMeeting(id){
 		});
 	});
 }
-			
+		
+function explainOpen(){
+		$("#explainDialog").html("Open Meetings are open to the public.");
+		$("#explainDialog").dialog({
+			modal:true,
+			buttons: {
+				OK: function(){
+					$(this).dialog("close");
+				}	
+			}
+		});
+}
+
+function explainClosed(){
+		$("#explainDialog").html("Closed Meetings are for Narcotics Anonymous members only.");
+		$("#explainDialog").dialog({
+			modal:true,
+			buttons: {
+				OK: function(){
+					$(this).dialog("close");
+				}	
+			}
+		});
+}
 
 $(document).ready(function() {
 	refreshHistory();
 	$("button").button();
+	$("a.linkButton").button();
 	setToday();
-	$("#myAccordion").accordion(accOpts);
+	$("#locTabs").tabs();
 	$("#setAdmin").click(function(event){
 		event.preventDefault();
 		var admin = $("#admin").val();

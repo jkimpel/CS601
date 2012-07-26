@@ -4,7 +4,15 @@
 	<meta charset="utf-8">
 	<title>New Meeting</title>
 	<link rel="stylesheet" href="jquery-ui-1.8.21.custom/css/ui-lightness/jquery-ui-1.8.21.custom.css">
-	<link href="nerna_style.css" type="text/css" rel="stylesheet"/>
+	<?php
+		include("Mobile_Detect.php");
+		$detect = new Mobile_Detect();
+		if ($detect->isMobile()){
+			echo '<link href="nerna_style_m.css" type="text/css" rel="stylesheet"/>';
+		}else{
+			echo '<link href="nerna_style.css" type="text/css" rel="stylesheet"/>';
+		}
+	?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.js"></script>
   	<script src="newMeeting.js"></script>
@@ -52,7 +60,7 @@
 			<button id='editButton'>Edit</button>
 		</div>
 	</form>
-	<div class="back"><a href="index.html">Go to Meeting Search</a></div>
+	<div class="back"><a class="linkButton" href="index.php">Go to Meeting Search</a></div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
 </body>

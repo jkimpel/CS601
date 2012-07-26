@@ -89,60 +89,52 @@
 		$indexes = array_keys($rowswithd);
 	}
 ?>
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Day</th>
-			<th>Time</th>
-			<th>Address</th>
-			<th>Town</th>
-			<th>Open?</th>
-			
-<?php 
-	if ($dist) 
-		echo "<th>Distance</th>";
-	
-	if ($admin)
-		echo "<th>Delete</th>";
-	
-	echo "</tr>";
 
+	<div id="dataAccordion">			
+<?php 
 	for($i = 0; $i < count($rows); $i++){
-		if ($dist)
+		if ($dist){
 			$row = $rows[$indexes[$i]];
+			$d = distance($row['Latitude'], $row['Longitude'], $lat, $lng);
+		}
 		else
 			$row = $rows[$i];
-		echo "\t\t<tr>\n";
-		echo "\t\t\t<td>" . $row['Name'] . "</td>\n";
-		echo "\t\t\t<td>" . dayOfWeek($row['Day']) . "</td>\n";
-		echo "\t\t\t<td> " . date("g:ia", strtotime($row['Time'])) . "</td>\n";
-		echo "\t\t\t<td> " . $row['Address'] . "</td>\n";
-		echo "\t\t\t<td> " . $row['Town'] . "</td>\n";
+		echo "<h2>" . $row['Name'];
+		if ($dist){
+			printf(" - %.2f miles</h2>", $d);
+		}else{
+			echo "</h2>";
+		}
+		echo "<div><table>";
+		echo "<tr><td>When:</td><td>" . dayOfWeek($row['Day']) . "";
+		echo " " . date("g:ia", strtotime($row['Time'])) . "</td></tr>";
+		if ($dist){
+			echo "<tr><td>Directions:</td><td>";
+			echo "<a class='linkButton' target='_blank' href='http://maps.google.com/maps?saddr=".$lat.",".$lng."&daddr=".$row['Latitude'].",".$row['Longitude']."'>";
+			echo $row['Address'].", ".$row['Town']."</a></td></tr>";
+		}else{
+			echo "<tr><td>Location:</td><td>";
+			echo $row['Address'] . ",";
+			echo " " . $row['Town'] . "</td></tr>";		
+		}
+		echo "<tr><td>Type:</td><td>";
 		if ($row['IsOpen']==1)
 		{
-			echo "\t\t\t<td>Open</td>\n";
+			echo "<button onclick='explainOpen()'>Open</button></td></tr>";
 		}
 		else
 		{
-			echo "\t\t\t<td>Closed</td>\n";
-		}
-		if ($dist){
-			echo "\t\t\t<td>";
-			echo "<a target='_blank' href='http://maps.google.com/maps?saddr=".$lat.",".$lng."&daddr=".$row['Latitude'].",".$row['Longitude']."'>";
-			printf("%.2f miles", distance($row['Latitude'], $row['Longitude'], $lat, $lng));
-			echo "</a></td>\n";
+			echo "<button onclick='explainClosed()'>Closed</button></td></tr>";
 		}
 		if ($admin){
-			echo "\t\t\t<td>";
 			$fname = addslashes($row['Name']);
-			echo "<button onclick='deleteMeeting(".$row['id'].")'>Delete!</button>";
-			echo "</td>";
+			echo "<tr><td>Manage:</td><td><button onclick='deleteMeeting(".$row['id'].")'>Delete!</button></td></tr>";
 		}
 		
-		echo "\t\t</tr>\n";
+		echo "</table></div>";
 	}
 
-	echo "\t</table>\n";
+	echo "</div>";
 	
 	$count = count($rows);
 	if ($count == 0){

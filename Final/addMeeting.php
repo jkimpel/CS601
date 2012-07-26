@@ -3,7 +3,15 @@
 <head>
 	<title>New Meeting Confirmation</title>
 	<meta charset="utf-8"/>
-	<link href="nerna_style.css" type="text/css" rel="stylesheet"/>
+	<?php
+		include("Mobile_Detect.php");
+		$detect = new Mobile_Detect();
+		if ($detect->isMobile()){
+			echo '<link href="nerna_style_m.css" type="text/css" rel="stylesheet"/>';
+		}else{
+			echo '<link href="nerna_style.css" type="text/css" rel="stylesheet"/>';
+		}
+	?>
 </head>
 <body>
 	<h1>Meeting Added!:</h1>
@@ -50,8 +58,8 @@
 			<li>Long: <?=$lng?></li>
 		</ul>
 	</div>
-	<div class="back"><a href="NewMeeting.html">Add Another Meeting</a></div>
-	<div class="back"><a href="index.html">Go to Meeting Search</a></div>
+	<div class="back"><a href="NewMeeting.php">Add Another Meeting</a></div>
+	<div class="back"><a href="index.php">Go to Meeting Search</a></div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
 </body>
