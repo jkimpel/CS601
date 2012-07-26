@@ -74,6 +74,13 @@ div.footer{
 div.recent button{
 	font-size: 80%;
 }
+select{
+	
+}
+.ui-accordion .ui-accordion-content{ overflow:hidden !important; }
+.ui-accordion-content-active{
+	padding-bottom: 30px !important;
+}
 #submitButton{display:none;}
 #editButton{display:none;}
 #detect{display:block;}

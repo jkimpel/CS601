@@ -1,5 +1,6 @@
 var accOpts = {
 	active: false,
+	autoheight: true,
 	collapsible: true
 };
 
@@ -225,10 +226,12 @@ $(document).ready(function() {
 		var admin = $("#admin").val();
 		if (admin != 0){
 			$("#admin").val(0);
-			$("#setAdmin").html("Enable Admin");
+			$("#setAdmin span").html("Enable Admin");
+			$("#setAdmin").button();
 		}else{
 			$("#admin").val(1);
-			$("#setAdmin").html("Disable Admin");
+			$("#setAdmin span").html("Disable Admin");
+			$("#setAdmin").button();
 		}
 	});
 	$(".submitter").change(function(){
