@@ -45,10 +45,8 @@ function errorCallback(error){
 }
 
 function processLatLong(lat, lng){
-	$('span.lat').html(lat);
-	$('span.long').html(lng);
-	$('#lat').val(lat);
-	$('#long').val(lng);
+	$('#flat').val(lat);
+	$('#flong').val(lng);
 	var zipurl =
 		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Flatlng%3D" 
 		+ lat + "%2C" + lng + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
@@ -76,7 +74,6 @@ function processLatLong(lat, lng){
 		}
 		if (country == "US" && zip != null){
 			$('span.town').html(town);
-			$('span.zip').html(zip);
 			enableDistanceSort();
 			ajaxTable();
 			updateHistory(lat, lng, town);
@@ -150,17 +147,15 @@ function locFromHistory(index){
 			hname = localStorage.recentName2;
 		break;
 	}
-	$('span.lat').html(hlat);
-	$('span.long').html(hlng);
-	$('#lat').val(hlat);
-	$('#long').val(hlng);
+	$('#flat').val(hlat);
+	$('#flong').val(hlng);
 	$('span.town').html(hname);
 	enableDistanceSort();
 	ajaxTable();
 }
 
 function ajaxTable(){
-	$.get("meetings_acc.php", $("form").serialize(), function(data){
+	$.get("meetings_acc.php", $("#query").serialize(), function(data){
 		$("#results").html(data);
 		$("#dataAccordion").accordion(accOpts);
 		$("div.result").show();
@@ -173,9 +168,9 @@ function setToday(){
 	var d = new Date();
 	var today = d.getDay();
 	var tomorrow = (today + 1) % 7;
-	$("#day").val(today);
-	$("option[value="+today+"]").html("Today");
-	$("option[value="+tomorrow+"]").html("Tomorrow");
+	$("#fday").val(today);
+	$("#fday > option[value="+today+"]").html("Today");
+	$("#fday > option[value="+tomorrow+"]").html("Tomorrow");
 }
 
 function deleteMeeting(id){
@@ -224,12 +219,212 @@ function enableDistanceSort(){
 	}
 }
 
+function validate(){
+	var namePattern= /^.{3,}$/g;
+	if  (!namePattern.test($("#name").val())) {
+		alert("Please enter at least a three character name.");
+		$("#name").focus();
+  		return  false;
+ 	}
+	var timePattern= /^(0?[1-9]|1[012])(:[0-5]\d)?(am|AM|pm|PM)?$/g;
+	if  (!timePattern.test($("#time").val())) {
+		alert("Please enter a valid time.");
+		$("#time").focus();
+  		return  false;
+ 	}
+ 	var address = $("#address").val();
+ 	var addressPattern = /^.{3,}?/g;
+ 	if (!addressPattern.test(address)){
+ 		alert("Please enter at least a three character address.");
+ 		$("#address").focus();
+ 		return false;
+ 	}
+ 	var town = $("#town").val();
+ 	var townPattern = /^.{3,}?/g;
+ 	if (!townPattern.test(town)){
+ 		alert("Please enter at least a three character town.");
+ 		$("#town").focus();
+ 		return false;
+ 	}
+ 	var fullAddress = address + " " + town + ", MA";
+ 	var inpts = fullAddress.split(" ");
+	var inptf = inpts[0];
+	for (i = 1; i < inpts.length; i++){
+		inptf = inptf + "%2B" + inpts[i];
+	}
+
+	var locurl =
+		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
+		+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
+	$.getJSON(locurl, function(locResponse) {
+		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
+			var rlat = locResponse.query.results.json.results.geometry.location.lat;
+			var rlng = locResponse.query.results.json.results.geometry.location.lng;
+			$("#alat").val(rlat); 
+			$("#alng").val(rlng);
+			$("#status").html("Ready To Submit!");
+			$("#dmap").html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=16&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
+			$("#submitButton").show();
+			$("#editButton").show();
+		} else {
+			alert("Unable to process location! Try again!");
+			unfreeze();
+		}
+	});
+	freeze();
+	return false;
+}
+
+function freeze(){
+	$("#status").html("Looking Up Location...");
+	$("#name").attr('readonly', true);
+	$("#time").attr('readonly', true);
+	$("#address").attr('readonly', true);
+	$("#town").attr('readonly', true);
+	compactDaySelect();
+	compactIsOpenSelect();
+	$("#validateButton").hide();
+}
+
+function unfreeze(){
+	$("#status").html("Awaiting Input");
+	$("#name").attr('readonly', false);
+	$("#time").attr('readonly', false);
+	$("#address").attr('readonly', false);
+	$("#town").attr('readonly', false);
+	expandDaySelect();
+	expandIsOpenSelect();
+	$("#validateButton").show();
+	$("#editButton").hide();
+	$("#submitButton").hide();
+}
+
+function compactDaySelect(){
+	var state = $("#aday").val();
+	$("#aday").html("<option value='"+state+"'>"+dayOf(state)+"</option>");
+}
+
+function expandDaySelect(){
+	var state = $("#aday").val();
+	$("#daay").html("");
+	for (var i = 0; i < 7; i++){
+		$("#aday").append("<option value='"+i+"'>"+dayOf(i)+"</option>");
+	}
+	$("#aday").val(state);
+}
+
+function dayOf(num){
+	var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+	return days[num];
+}
+
+function compactIsOpenSelect(){
+	var state = $("#isOpen").val();
+	if (state == "1")
+		$("#isOpen").html("<option value='1'>Open</option>");
+	else
+		$("#isOpen").html("<option value='0'>Closed</option>");
+}
+
+function expandIsOpenSelect(){
+	var state = $("#isOpen").val();
+	$("#isOpen").html("<option value='1'>Open</option><option value='0'>Closed</option>");
+	$("#isOpen").val(state);
+}
+
+function ajaxData(){
+	$.get("addMeeting.php", $("#newMeetingForm").serialize(), function(data){
+		$("#confirmDialog").html(data);
+		$("#confirmDialog").dialog({
+			modal:true,
+			buttons: {
+				OK: function(){
+					resetForm();
+					$(this).dialog("close");
+				}	
+			},
+			close: function(){resetForm();}
+			
+		});
+	});
+}
+
+function resetForm(){
+	unfreeze();
+	$("#name").val("");
+	$("#time").val("");
+	$("#address").val("");
+	$("#town").val("");
+	$("#time").val("");
+	$("#isOpen").val("1");
+	$("#aday").val("0");
+	$("#dmap").html("");
+}
+
+function calcTime(){
+	var date = new Date($("#datepicker").val());
+	var now = new Date();
+	var diff = now.getTime() - date.getTime();
+	var diffDays = diff/ (1000 * 60 * 60 * 24);
+	$("#timeResults").html("You have been clean " + Math.floor(diffDays) + " days!");
+	var keytag = 0;
+	test = new Date();
+	test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 1;	//1months
+	}	
+	test = new Date();
+	for (var i = 0; i < 2; i++)
+		test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 2;	//2months
+	}	
+	test = new Date();
+	for (var i = 0; i < 3; i++)
+		test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 3;	//3months
+	}	
+	test = new Date();
+	for (var i = 0; i < 6; i++)
+		test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 4;	//6months
+	}	
+	test = new Date();
+	for (var i = 0; i < 9; i++)
+		test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 5;	//9months
+	}	
+	test = new Date();
+	test.setFullYear(test.getFullYear() - 1);
+	if (test.getTime() > date.getTime()){
+		keytag = 6;	//1year
+	}	
+	test = new Date();
+	test.setFullYear(test.getFullYear() - 1);
+	for (var i = 0; i < 6; i++)
+		test.setMonth(test.getMonth() -1);	
+	if (test.getTime() > date.getTime()){
+		keytag = 7;	//18 months
+	}
+	var test = new Date();
+	test.setFullYear(test.getFullYear() - 2);
+	if (test.getTime() > date.getTime()){
+		keytag = 8;	//multiple years
+	}
+	
+	$("#keytag").html("<img src='img/nakeytag"+keytag+".jpg'/>");
+}
+
 $(document).ready(function() {
 	located = false;
 	refreshHistory();
 	$("button").button();
 	$("a.linkButton").button();
 	setToday();
+	$("#navTabs").tabs();
 	$("#locTabs").tabs();
 	$("#setAdmin").click(function(event){
 		event.preventDefault();
@@ -243,6 +438,22 @@ $(document).ready(function() {
 			$("#setAdmin span").html("Disable Admin");
 			$("#setAdmin").button();
 		}
+	});
+	$("#datepicker").datepicker({
+		maxDate: 0,
+		onSelect: function(){calcTime()}
+	});
+	$("#validateButton").click(function(event){
+		event.preventDefault();
+		validate();
+	});
+	$("#editButton").click(function(event){
+		event.preventDefault();
+		unfreeze();
+	});
+	$("#submitButton").click(function(event){
+		event.preventDefault();
+		ajaxData();
 	});
 	$(".submitter").change(function(){
 		ajaxTable();

@@ -70,6 +70,13 @@
 				<option value="closed">Closed</option>
 			</select>
 		</div>
+		<div class='form'>
+			<h4>Sort By:</h4>
+			<select class="submitter" id="sort" name="sort">
+				<option value="w">Day/Time</option>
+				<option value="t">Town</option>
+			</select>
+		</div>
 		<input name="lat" id="lat" type="hidden" value="0"/>
 		<input name="long" id="long" type="hidden" value="0"/>
 		<input name="admin" id="admin" type="hidden" value="0"/>

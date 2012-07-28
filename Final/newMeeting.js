@@ -111,6 +111,35 @@ function expandIsOpenSelect(){
 	$("#isOpen").val(state);
 }
 
+function ajaxData(){
+	$.get("addMeeting.php", $("form").serialize(), function(data){
+		$("#confirmDialog").html(data);
+		$("#confirmDialog").dialog({
+			modal:true,
+			buttons: {
+				OK: function(){
+					resetForm();
+					$(this).dialog("close");
+				}	
+			},
+			close: function(){resetForm();}
+			
+		});
+	});
+}
+
+function resetForm(){
+	unfreeze();
+	$("#name").val("");
+	$("#time").val("");
+	$("#address").val("");
+	$("#town").val("");
+	$("#time").val("");
+	$("#isOpen").val("1");
+	$("#day").val("0");
+	$("#dmap").html("");
+}
+
 $(function() {
 	$("button").button();
 	$("a.linkButton").button();
@@ -121,5 +150,9 @@ $(function() {
 	$("#editButton").click(function(event){
 		event.preventDefault();
 		unfreeze();
+	});
+	$("#submitButton").click(function(event){
+		event.preventDefault();
+		ajaxData();
 	});
 });

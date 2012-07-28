@@ -31,11 +31,20 @@
 	
 	$day = $_GET['day'];
 	$isOpen = $_GET['isOpen'];
+	$sort = $_GET['sort'];
 	$lat = $_GET['lat'];
 	$lng = $_GET['long'];
 	$admin = $_GET['admin'];
 	
 	$dist = (($lat != 0) && ($lng != 0));
+	
+	if (($sort !="t") && ($sort != "w") && ($sort != "d")){
+		$sort = "t";
+	}
+	
+	if ((!$dist) && ($sort == "d")){
+		$sort = "t";
+	}
 	
 	$qstring = "SELECT * FROM Meeting";
 	//$whered is a boolean, whether or not a where clause has been appended
@@ -63,6 +72,12 @@
 		}
 	}
 	
+	if ($sort == "t"){
+		$qstring = $qstring . " order by Town";
+	}else if ($sort == "w"){
+		$qstring = $qstring . " order by Day, Time";
+	}
+	
 	$result = mysql_query($qstring);	
 	
 	$rows = array();
@@ -76,46 +91,58 @@
 	while($row = mysql_fetch_array($result))
 	{
 		array_push($rows, $row);
-		if ($dist){
+		if ($sort == "d"){
 			array_push($dists, distance($row['Latitude'], $row['Longitude'], $lat, $lng));
 			array_push($indexes, $num);	
 			$num++;
 		}
 	}
 	
-	if (($dist)&&($num>0)){
+	if (($sort == "d")&&($num>0)){
 		$rowswithd = array_combine($indexes, $dists);
 		asort($rowswithd, SORT_NUMERIC);
 		$indexes = array_keys($rowswithd);
 	}
 ?>
-
+	
 	<div id="dataAccordion">			
 <?php 
 	for($i = 0; $i < count($rows); $i++){
-		if ($dist){
+		if ($sort == "d")
 			$row = $rows[$indexes[$i]];
-			$d = distance($row['Latitude'], $row['Longitude'], $lat, $lng);
-		}
 		else
 			$row = $rows[$i];
-		echo "<h2>" . $row['Name'];
 		if ($dist){
-			printf(" - %.2f miles</h2>", $d);
-		}else{
-			echo "</h2>";
+			$d = distance($row['Latitude'], $row['Longitude'], $lat, $lng);
 		}
+		
+		echo "<h2>" . $row['Name'];
+		if ($sort == 'd'){
+			printf(" - %.2f miles", $d);
+		} else if ($sort == 'w'){
+			echo " - ".date("g:ia", strtotime($row['Time']))." ".dayOfWeek($row['Day']);
+			if ($row['Day'] == date('w', time() - 60*60*4)){
+				if (strtotime($row['Time']) > (time() - 60*60*4)){
+					echo "<span class='highlight'>(Later Today!)</span>";
+				}
+			}
+		}else if ($sort == 't'){
+			echo " - ".$row['Town'];
+		}
+		echo "</h2>";
 		echo "<div><table>";
 		echo "<tr><td>When:</td><td>" . dayOfWeek($row['Day']) . "";
 		echo " " . date("g:ia", strtotime($row['Time'])) . "</td></tr>";
 		if ($dist){
 			echo "<tr><td>Directions:</td><td>";
 			echo "<a class='linkButton' target='_blank' href='http://maps.google.com/maps?saddr=".$lat.",".$lng."&daddr=".$row['Latitude'].",".$row['Longitude']."'>";
-			echo $row['Address'].", ".$row['Town']."</a></td></tr>";
+			echo $row['Address'].", ".$row['Town']."</a>";
+			printf(" (%.2f miles)", $d);
+			echo "</td></tr>";
 		}else{
 			echo "<tr><td>Location:</td><td>";
-			echo $row['Address'] . ",";
-			echo " " . $row['Town'] . "</td></tr>";		
+			echo "<a class='linkButton' target='_blank' href='http://maps.google.com/maps?q=".$row['Latitude'].",".$row['Longitude']."'>";
+			echo $row['Address'] . ", " . $row['Town'] . "</a></td></tr>";		
 		}
 		echo "<tr><td>Type:</td><td>";
 		if ($row['IsOpen']==1)

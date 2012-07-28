@@ -75,7 +75,28 @@ div.recent button{
 	font-size: 80%;
 }
 select{
+	font-size: 200% !important;
+	text-align: center;
+	border: 1px solid #CCC;
+	font-weight: bold;
+	color: #1C94C4;
+	-webkit-appearance: none;
 	
+}
+span.highlight{
+	color:red;
+}
+span.label{
+	font-size: 1.5em;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left:auto;
+	margin-right:auto;
+	width:70%;
+	text-align: center;
+	border: 1px solid black;
+	border-radius:5px;
+	background-color: lightblue;
 }
 .ui-accordion .ui-accordion-content{ overflow:hidden !important; }
 .ui-accordion-content-active{

@@ -33,6 +33,10 @@ table{
 tr td:first-child{
 	font-weight: bold;
 }
+#navTabs{
+	margin: auto;
+	width: 80%;
+}
 div.form{
 	padding: 10px 20px;
 	border: 1px solid black;
@@ -72,6 +76,21 @@ div.footer{
 }
 div.recent button{
 	font-size: 80%;
+}
+span.label{
+	font-size: 1.5em;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left:auto;
+	margin-right:auto;
+	width:70%;
+	text-align: center;
+	border: 1px solid black;
+	border-radius:5px;
+	background-color: lightblue;
+}
+span.highlight{
+	color:red;
 }
 select{
 	font-size: 25px !important;

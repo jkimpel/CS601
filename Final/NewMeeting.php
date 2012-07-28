@@ -60,6 +60,7 @@
 			<button id='editButton'>Edit</button>
 		</div>
 	</form>
+	<div id="confirmDialog" title="Meeting Added"></div>
 	<div class="back"><a class="linkButton" href="index.php">Go to Meeting Search</a></div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
