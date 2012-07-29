@@ -157,10 +157,10 @@ function locFromHistory(index){
 function ajaxTable(){
 	$.get("meetings_acc.php", $("#query").serialize(), function(data){
 		$("#results").html(data);
-		$("#dataAccordion").accordion(accOpts);
 		$("div.result").show();
 		$("button").button();
 		$("a.linkButton").button();
+		$("#dataAccordion").accordion(accOpts);
 	});
 }
 
@@ -306,7 +306,7 @@ function compactDaySelect(){
 
 function expandDaySelect(){
 	var state = $("#aday").val();
-	$("#daay").html("");
+	$("#aday").html("");
 	for (var i = 0; i < 7; i++){
 		$("#aday").append("<option value='"+i+"'>"+dayOf(i)+"</option>");
 	}
@@ -442,6 +442,9 @@ $(document).ready(function() {
 	$("#datepicker").datepicker({
 		maxDate: 0,
 		onSelect: function(){calcTime()}
+	});
+	$("#datepicker").focus(function(){
+		$(this).blur();
 	});
 	$("#validateButton").click(function(event){
 		event.preventDefault();

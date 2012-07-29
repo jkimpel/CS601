@@ -9,6 +9,7 @@
 		$detect = new Mobile_Detect();
 		if ($detect->isMobile()){
 			echo '<link href="nerna_style_m.css" type="text/css" rel="stylesheet"/>';
+			echo '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">';
 		}else{
 			echo '<link href="nerna_style.css" type="text/css" rel="stylesheet"/>';
 		}
