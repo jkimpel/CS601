@@ -120,9 +120,10 @@
 		if ($sort == 'd'){
 			printf(" - %.2f miles", $d);
 		} else if ($sort == 'w'){
+			date_default_timezone_set('America/New_York');
 			echo " - ".date("g:ia", strtotime($row['Time']))." ".dayOfWeek($row['Day']);
-			if ($row['Day'] == date('w', time() - 60*60*4)){
-				if (strtotime($row['Time']) > (time() - 60*60*4)){
+			if ($row['Day'] == date('w', time())){
+				if (strtotime($row['Time']) > (time())){
 					echo "<span class='highlight'>(Later Today!)</span>";
 				}
 			}

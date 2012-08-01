@@ -95,6 +95,13 @@
 			<div id="results" class="result"></div>
 			<div id="deleteDialog" title="Delete Confirmed"></div>
 			<div id="explainDialog" title="Meeting Type Info"></div>
+			<div id="authDialog" title="Authenticate">
+				<table>
+				<tr><td>Username:</td><td><input type="text" id="uname"/></td></tr>
+				<tr><td>Password:</td><td><input type="password" id="pass"/></td></tr>
+				</table>
+				<div id="authFeedback"></div>
+			</div>
 		</div>
 		<div id="navtabs-2">
 			<form name='newMeetingForm' id='newMeetingForm' onsubmit='return validate()'>

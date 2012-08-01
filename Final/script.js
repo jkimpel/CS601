@@ -173,6 +173,49 @@ function setToday(){
 	$("#fday > option[value="+tomorrow+"]").html("Tomorrow");
 }
 
+function enableAdmin(){
+	var admin = $("#admin").val();
+	if (admin != 0){
+		$("#admin").val(0);
+		$("#setAdmin span").html("Enable Admin");
+		$("#setAdmin").button();
+	}else{
+		$("#authDialog").dialog({
+			modal: true,
+				buttons: {
+					Cancel: function(){
+						$("#uname").val("");
+						$("#pass").val("");
+						$(this).dialog("close");
+					},
+					Authenticate: function(){
+						var u = $("#uname").val();
+						var p = $("#pass").val();
+						if ((u == 'admin') && (p == 'admin')){
+							$("#admin").val(1);
+							$("#setAdmin span").html("Disable Admin");
+							$("#setAdmin").button();
+							$("#uname").val("");
+							$("#pass").val("");
+							$(this).dialog("close");
+							ajaxTable();
+						}else{
+							$("#authFeedback").show();
+							$("#authFeedback").html("<span class='highlight'>Auth Failed!</span>");
+							$(this).parent().effect('shake',{times:4}, 120, function(){
+								$("#authFeedback").fadeOut(3000);
+							});
+							$("#uname").val("");
+							$("#pass").val("");
+						}
+					}
+				}
+		
+		});
+	}
+	ajaxTable();
+}
+
 function deleteMeeting(id){
 	$.get("deleteMeeting.php", "id="+id, function(data){
 		ajaxTable();
@@ -263,7 +306,7 @@ function validate(){
 			$("#alat").val(rlat); 
 			$("#alng").val(rlng);
 			$("#status").html("Ready To Submit!");
-			$("#dmap").html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=16&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
+			$("#dmap").html('<iframe width="250" height="250" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=15&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
 			$("#submitButton").show();
 			$("#editButton").show();
 		} else {
@@ -428,18 +471,11 @@ $(document).ready(function() {
 	$("#locTabs").tabs();
 	$("#setAdmin").click(function(event){
 		event.preventDefault();
-		var admin = $("#admin").val();
-		if (admin != 0){
-			$("#admin").val(0);
-			$("#setAdmin span").html("Enable Admin");
-			$("#setAdmin").button();
-		}else{
-			$("#admin").val(1);
-			$("#setAdmin span").html("Disable Admin");
-			$("#setAdmin").button();
-		}
+		enableAdmin();
 	});
 	$("#datepicker").datepicker({
+		changeMonth: true,
+		changeYear: true,
 		maxDate: 0,
 		onSelect: function(){calcTime()}
 	});

@@ -102,6 +102,7 @@ span.label{
 .ui-accordion-content-active{
 	padding-bottom: 30px !important;
 }
+#authDialog{display:none;}
 #submitButton{display:none;}
 #editButton{display:none;}
 #detect{display:block;}

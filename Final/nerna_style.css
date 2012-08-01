@@ -104,6 +104,7 @@ select{
 .ui-accordion-content-active{
 	padding-bottom: 45px !important;
 }
+#authDialog{display:none;}
 #submitButton{display:none;}
 #editButton{display:none;}
 #detect{display:none;}
