@@ -10,25 +10,29 @@ function calcTime(){
 	var date = new Date($("#datepicker").val());
 	var now = new Date();
 	var diff = now.getTime() - date.getTime();
-	var diffDays = diff/ (1000 * 60 * 60 * 24);
-	$("#timeResults").html("<h3>You have been clean " + Math.floor(diffDays) + " days!</h3>");
+	var diffDays = Math.floor(diff/ (1000 * 60 * 60 * 24));
+	if (diffDays == 0){
+		$("#timeResults").html("<h3>Welcome to Narcotics Anonymous! Now go find a meeting!</h3>");
+	} else if (diffDays == 1){
+		$("#timeResults").html("<h3>The first 24 hours are the hardest part. Keep it up!</h3>");
+	} else {
+		$("#timeResults").html("<h3>Congratulations! You have been clean " + diffDays + " days!</h3>");
+	}
 	var keytag = 0;
 	test = new Date();
-	test.setMonth(test.getMonth() -1);	
+	test = new Date(test.getTime() - 30*24*60*60*1000);	
 	if (test.getTime() > date.getTime()){
-		keytag = 1;	//1months
+		keytag = 1;	//30 Days
 	}	
 	test = new Date();
-	for (var i = 0; i < 2; i++)
-		test.setMonth(test.getMonth() -1);	
+	test = new Date(test.getTime() - 60*24*60*60*1000);	
 	if (test.getTime() > date.getTime()){
-		keytag = 2;	//2months
+		keytag = 2;	//60 days
 	}	
 	test = new Date();
-	for (var i = 0; i < 3; i++)
-		test.setMonth(test.getMonth() -1);	
+	test = new Date(test.getTime() - 90*24*60*60*1000);
 	if (test.getTime() > date.getTime()){
-		keytag = 3;	//3months
+		keytag = 3;	// 90 days
 	}	
 	test = new Date();
 	for (var i = 0; i < 6; i++)
@@ -60,4 +64,5 @@ function calcTime(){
 		keytag = 8;	//multiple years
 	}
 	$("#keytag").html("<img src='img/nakeytag"+keytag+".jpg' alt='Your Keytag!'/>");
+	$("#keytag").append("<h3>Your Keytag</h3>");
 }

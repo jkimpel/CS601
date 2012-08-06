@@ -6,6 +6,9 @@
 	*					*
 	*********************/
 
+//This little function converts the option labels from static
+//	to dynamically naming today and tomorrow
+//	and defaulting to today
 function setToday(){
 	var d = new Date();
 	var today = d.getDay();
@@ -15,7 +18,8 @@ function setToday(){
 	$("#fday > option[value="+tomorrow+"]").html("Tomorrow");
 }
 
-
+//This function is run when the DOM is loaded
+//	mainly, everything that is JQuery dependent is being set up here
 $(document).ready(function() {
 	located = false;
 	refreshHistory();
@@ -24,6 +28,10 @@ $(document).ready(function() {
 	setToday();
 	$("#navTabs").tabs();
 	$("#locTabs").tabs();
+	$("#locAcc").accordion({
+		autoHeight: false,
+		collapsible: true
+	});
 	$("#setAdmin").click(function(event){
 		event.preventDefault();
 		toggleAdmin();

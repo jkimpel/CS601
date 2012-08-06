@@ -56,39 +56,43 @@
 			<div class='formLeft'>
 				<div class='forma'>
 					<h4>Location</h4>
-					<div id="locTabs">
-						<ul>
-							<?php
-								if ($mbl){
-									echo '<li><a href="#tabs-1">A</a></li>';
-									echo '<li><a href="#tabs-2">M</a></li>';
-									echo '<li><a href="#tabs-3">R</a></li>';
-								}else{
-									echo '<li><a href="#tabs-1">Auto</a></li>';
-									echo '<li><a href="#tabs-2">Manual</a></li>';
-									echo '<li><a href="#tabs-3">Recent</a></li>';
-								}
-							?>					
-						</ul>
-						<div id="tabs-1">
-							<div class="autolocate">Try Automatic Location</div>
-							<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
-						</div>
-						<div id="tabs-2">
-							<div>
-								Location: <input type="text" id="location" name="location"/>
+					<?php if ($mbl): ?>
+						<div id ="locAcc">
+							<h3><a href="#">Auto</a></h3>
+					<?php else: ?>
+						<div id ="locTabs">
+							<ul>
+								<li><a href="#tabs-1">Auto</a></li>
+								<li><a href="#tabs-2">Manual</a></li>
+								<li><a href="#tabs-3">Recent</a></li>
+							</ul>
+					<?php endif; ?>
+							<div id="tabs-1">
+								<div class="autolocate">Try Automatic Location</div>
+								<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 							</div>
-							<div>
-								<button id="submit" onclick="clickSubmit()">Submit!</button>
+					<?php if ($mbl): ?>
+							<h3><a href="#">Manual</a></h3>
+					<?php endif; ?>
+							<div id="tabs-2">
+								<div>
+									Location: <input type="text" id="location" name="location"/>
+								</div>
+								<div>
+									<button id="submit" onclick="clickSubmit()">Submit!</button>
+								</div>
 							</div>
-						</div>
-						<div id="tabs-3">
-							<div class="recent">
-								<div>No recent locations!</div>
+					<?php if ($mbl): ?>
+							<h3><a href="#">Recent</a></h3>
+					<?php endif; ?>
+							<div id="tabs-3">
+								<div class="recent">
+									<div>No recent locations!</div>
+								</div>
+								<div><button id="clear" onclick="clearHistory()">Clear History</button></div>
 							</div>
-							<div><button id="clear" onclick="clearHistory()">Clear History</button></div>
-						</div>
-					</div>
+					
+						</div>	<!--This either ends locAcc or locTabs -->
 					<h4>Location: <span class="town">None</span></h4>
 				</div>
 				<form id="query">
@@ -123,7 +127,12 @@
 					<input name="lat" id="flat" type="hidden" value="0"/>
 					<input name="long" id="flong" type="hidden" value="0"/>
 					<input name="admin" id="admin" type="hidden" value="0"/>
+					<?php
+						if ($mbl)
+							echo '<h4>***</h4>';
+					?>
 				</form>
+				
 				<div class='forma'>
 					<button onclick="ajaxTable()">Search!</button>
 					<button id="setAdmin">Enable Admin</button>
@@ -152,9 +161,11 @@
 			<form name='newMeetingForm' id='newMeetingForm' onsubmit='return validate()'>
 				<div class='formLeft'>
 					<div class='forma'><span class="label">Meeting Name:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='name' name='name' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Day of week:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<select id="aday" name="day">
 							<option value="0">Sunday</option>
 							<option value="1">Monday</option>
@@ -166,20 +177,25 @@
 						</select>
 					</div>
 					<div class='forma'><span class="label">Time:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='time' name='time' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Address:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='address' name='address' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Town:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='town' name='town' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Type of Meeting:</span>
+						<?php if ($mbl) echo "<br/>"; ?>
 						<select id="isOpen" name="isOpen">
 							<option value="1">Open</option>
 							<option value="0">Closed</option>
 						</select>
 					</div>
+					<?php if ($mbl) echo "<h4>***</h4>"; ?>
 				</div>
 				<div class='formRight'>
 					<div class='forma' id='dmap'>
@@ -200,16 +216,21 @@
 			<div class="footer"></div>
 		</div>
 		<div id="navtabs-3">
-			<div class="form">
-				<h3>Enter Clean Date:</h3>
-				<input type="text" id="datepicker"/>
+			<div class="formLeft">
+				<div class="forma">
+					<h3>Enter Clean Date:</h3>
+					<input type="text" id="datepicker"/>
+				</div>
+				<div class="forma">
+					<div id="timeResults"></div>
+				</div>
 			</div>
-			<div class="form">
-				<div id="timeResults"></div>
+			<div class="formRight">
+				<div class="forma">
+					<div id="keytag"></div>
+				</div>
 			</div>
-			<div class="form">
-				<div id="keytag"></div>
-			</div>
+			<div class="footer"></div>
 		</div>
 	</div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>

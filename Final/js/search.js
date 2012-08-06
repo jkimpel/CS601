@@ -6,6 +6,7 @@
 	*					*
 	*********************/
 
+//This handles manually typed locations
 function clickSubmit(){
 	var locale = $("#location").val();
 	var inpts = locale.split(" ");
@@ -14,12 +15,16 @@ function clickSubmit(){
 		inptf = inptf + "%2B" + inpts[i];
 	}
 
+	//Using YQL allows us to bypass the same-origin policy
 	var locurl =
 		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
 		+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
 		
 	var zip = null;
 	$.getJSON(locurl, function(locResponse) {
+	
+		//See this url for an explanation of the JSON results:
+		//	https://developers.google.com/maps/documentation/geocoding/#JSON
 		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
 			processLatLong(locResponse.query.results.json.results.geometry.location.lat, 
 				locResponse.query.results.json.results.geometry.location.lng);
@@ -29,12 +34,13 @@ function clickSubmit(){
 	});
 }
 
+//This handles auto-location
 function clickLocate(){
 	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 	$('div.autolocate').html("<div>Attempting geolocation...</div>");
 }
 
-//called when geolocation fails
+//called when geolocation succeeds
 function successCallback(position){
 	$('div.autolocate').html("<div>Geolocation Suceeded</div>");
 	processLatLong(position.coords.latitude, position.coords.longitude);
@@ -42,13 +48,17 @@ function successCallback(position){
 
 //called when geolocation fails
 function errorCallback(error){
-	neatAlert("GeoLocation failed! " + error.message, "");
+	neatAlert("GeoLocation failed!");
 	$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
 }
 
+//Once we have the location to a latitude & longitude, this method handles it
 function processLatLong(lat, lng){
 	$('#flat').val(lat);
 	$('#flong').val(lng);
+	$('span.town').html("Processing...");
+	
+	//Using YQL allows us to bypass the same-origin policy
 	var zipurl =
 		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Flatlng%3D" 
 		+ lat + "%2C" + lng + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
@@ -56,6 +66,9 @@ function processLatLong(lat, lng){
 	var town = null;
 	var country = null;
 	$.getJSON(zipurl, function(zipResponse) {
+	
+		//See this url for an explanation of the JSON results:
+		//	https://developers.google.com/maps/documentation/geocoding/#JSON
 		try{
 			for (var i = 0; i < zipResponse.query.results.json.results.length; i++){
 				for (var j = 0; j < zipResponse.query.results.json.results[i].address_components.length; j++){
@@ -81,12 +94,16 @@ function processLatLong(lat, lng){
 			updateHistory(lat, lng, town);
 		} else {
 			neatAlert("Sorry! Unable to process your location.", "");
+			var nlat = new Number(lat);
+			var nlng = new Number(lng);
+			$('span.town').html("" + nlat.toPrecision(4) + "," + nlng.toPrecision(4));
+			enableDistanceSort();
+			ajaxTable();
 		}
 	});
 }
 
-
-
+//This method retrieves information about meetings from the server & formats them
 function ajaxTable(){
 	$.get("meetings_acc.php", $("#query").serialize(), function(data){
 		$("#results").html(data);
@@ -101,7 +118,8 @@ function ajaxTable(){
 		});
 	});
 }
-		
+	
+//Simple method to explain what an open meeting is
 function explainOpen(){
 		$("#explainDialog").html("Open Meetings are open to the public.");
 		$("#explainDialog").dialog({
@@ -114,6 +132,7 @@ function explainOpen(){
 		});
 }
 
+//Simple method to explain what a closed meeting is
 function explainClosed(){
 		$("#explainDialog").html("Closed Meetings are for Narcotics Anonymous members only.");
 		$("#explainDialog").dialog({
@@ -126,6 +145,7 @@ function explainClosed(){
 		});
 }
 
+//This method enables sorting the results by distance from the user's location
 function enableDistanceSort(){
 	if (!located){
 		$("#sort").append("<option value='d'>Distance</option>");

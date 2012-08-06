@@ -84,18 +84,25 @@ div.recent button{
 	font-size: 80%;
 }
 select{
+	display: block;
+	width: 8em;
+	margin-left: auto;
+	margin-right: auto;
 	font-size: 120% !important;
 	text-align: center;
 	border: 1px solid #CCC;
 	font-weight: bold;
 	color: #1C94C4;
-	-webkit-appearance: none;
-	
+	-webkit-appearance: none;	
+}
+div.ui-datepicker select{
+	display: inline;
 }
 span.highlight{
 	color:red;
 }
 span.label{
+	display: block;
 	font-size: 1.2em;
 	margin-top: 0;
 	margin-bottom: 0;
@@ -107,9 +114,20 @@ span.label{
 	border-radius:5px;
 	background-color: lightblue;
 }
+input{
+	display: block;
+	width: 10em;
+	margin-left: auto;
+	margin-right: auto;
+}
 .ui-accordion .ui-accordion-content{ overflow:hidden !important; }
 .ui-accordion-content-active{
-	padding-bottom: 30px !important;
+	padding-bottom: 15px !important;
+}
+.ui-button{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 #authDialog{display:none;}
 #submitButton{display:none;}

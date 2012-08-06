@@ -195,7 +195,8 @@ class Mobile_Detect {
     */
     public function isMobile()
     {
-	    return $this->isMobile;
+	    //return $this->isMobile;
+	    return true;
     } 
     
     /**
