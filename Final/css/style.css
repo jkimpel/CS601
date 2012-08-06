@@ -13,12 +13,18 @@ h1, h3{
 	margin-right:auto;
 	width:70%;
 	text-align: center;
-	padding: 15px;
+	padding: 1px;
 	border: 1px solid #C8C8C8;
 	border-radius:15px;
 	font-family: Arial, sans-serif;
 	color: #383838;
 	background-color: lightblue;
+}
+h1{
+	margin-bottom: 1px;
+}
+h3.title{
+	margin-top: 1px;
 }
 h4{
 	font-size: 1.2em;

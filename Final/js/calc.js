@@ -11,7 +11,7 @@ function calcTime(){
 	var now = new Date();
 	var diff = now.getTime() - date.getTime();
 	var diffDays = diff/ (1000 * 60 * 60 * 24);
-	$("#timeResults").html("You have been clean " + Math.floor(diffDays) + " days!");
+	$("#timeResults").html("<h3>You have been clean " + Math.floor(diffDays) + " days!</h3>");
 	var keytag = 0;
 	test = new Date();
 	test.setMonth(test.getMonth() -1);	

@@ -33,6 +33,11 @@
 </head>
 <body>
 	<h1>Meeting Finder</h1>
+	<?php
+		if(!$mbl){
+			echo '<h3 class="title">Boston Area Narcotics Anonymous</h3>';
+		}
+	?>
 	<div id="navTabs">
 		<ul>
 			<?php
@@ -196,7 +201,7 @@
 		</div>
 		<div id="navtabs-3">
 			<div class="form">
-				Enter Clean Date:
+				<h3>Enter Clean Date:</h3>
 				<input type="text" id="datepicker"/>
 			</div>
 			<div class="form">
