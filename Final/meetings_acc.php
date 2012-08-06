@@ -1,4 +1,12 @@
 <?php
+	/********************
+	*	Joe Kimpel		*
+	*	CS 601			*	
+	*	Final Project	*
+	*	8.5.2012		*
+	*					*
+	*********************/
+
 	function dayOfWeek($d){
 		$days = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 		return $days[$d];
@@ -20,14 +28,56 @@
 		$d  = $c * $r;
 		return $d;		
 	}
-
-	$con = mysql_connect("localhost","736253_root","cs601");
-	if (!$con)
-	{
-		die('Could not connect: ' . mysql_error());
+	
+	function validateData($day, $isOpen, $sort, $lat, $lng, $admin){
+		$pattern = '/^[0-7]$/';
+		if (!preg_match($pattern, $day)){
+			echo '<h3>Bad Search Params: day='.$day.'</h3>';
+			exit();
+		}
+		$pattern = '/^[0-2]$/';
+		if (!preg_match($pattern, $isOpen)){
+			echo '<h3>Bad Search Params: isOpen='.$isOpen.'</h3>';
+			exit();
+		}
+		$pattern = '/^[dtw]$/';
+		if (!preg_match($pattern, $sort)){
+			echo '<h3>Bad Search Params: sort='.$sort.'</h3>';
+			exit();
+		}
+		$pattern = '/^-{0,1}\d*\.{0,1}\d+$/';
+		if (!preg_match($pattern, $lat)){
+			echo '<h3>Bad Search Params: lat='.$lat.' - not a number</h3>';
+			exit();
+		} else {
+			$flat = floatval($lat);
+			if (($flat < -90) || ($flat > 90)){
+				echo '<h3>Bad Search Params: lat='.$lat.' - out of bounds</h3>';
+				exit();
+			}	
+		}
+		$pattern = '/^-{0,1}\d*\.{0,1}\d+$/';
+		if (!preg_match($pattern, $lng)){
+			echo '<h3>Bad Search Params: lng='.$lng.' - not a number</h3>';
+			exit();
+		} else {
+			$flng = floatval($lng);
+			if (($flng < -180) || ($flng > 180)){
+				echo '<h3>Bad Search Params: lng='.$lng.' - out of bounds</h3>';
+				exit();
+			}		
+		}
+		$pattern = '/^[0-1]$/';
+		if (!preg_match($pattern, $admin)){
+			echo '<h3>Bad Search Params: admin='.$admin.'</h3>';
+			exit();
+		}
+		
 	}
-
-	mysql_select_db("jkcs601_zxq_nerna", $con);
+	
+	include("Mobile_Detect.php");
+	$detect = new Mobile_Detect();
+	$mbl = $detect->isMobile();
 	
 	$day = $_GET['day'];
 	$isOpen = $_GET['isOpen'];
@@ -35,6 +85,8 @@
 	$lat = $_GET['lat'];
 	$lng = $_GET['long'];
 	$admin = $_GET['admin'];
+	
+	validateData($day, $isOpen, $sort, $lat, $lng, $admin);
 	
 	$dist = (($lat != 0) && ($lng != 0));
 	
@@ -56,14 +108,14 @@
 		$whered = true;
 	} 
 	
-	if ($isOpen=="open"){
+	if ($isOpen=="1"){
 		if ($whered)
 			$qstring = $qstring . " and IsOpen = 1";
 		else{
 			$qstring = $qstring . " where IsOpen = 1";
 			$whered = true;
 		}
-	} else if ($isOpen=="closed"){
+	} else if ($isOpen=="0"){
 		if ($whered)
 			$qstring = $qstring . " and IsOpen = 0";
 		else{
@@ -77,6 +129,8 @@
 	}else if ($sort == "w"){
 		$qstring = $qstring . " order by Day, Time";
 	}
+	
+	include 'db.php';
 	
 	$result = mysql_query($qstring);	
 	
@@ -132,20 +186,36 @@
 		}
 		echo "</h2>";
 		echo "<div><table>";
-		echo "<tr><td>When:</td><td>" . dayOfWeek($row['Day']) . "";
+		echo "<tr><td>When:</td>";
+		if ($mbl){
+			echo "</tr><tr class='nonBold'>";
+		}
+		echo "<td>" . dayOfWeek($row['Day']) . "";
 		echo " " . date("g:ia", strtotime($row['Time'])) . "</td></tr>";
 		if ($dist){
-			echo "<tr><td>Directions:</td><td>";
+			echo "<tr><td>Directions:</td>";
+			if ($mbl){
+				echo "</tr><tr class='nonBold'>";
+			}
+			echo "<td>";
 			echo "<a class='linkButton' target='_blank' href='http://maps.google.com/maps?saddr=".$lat.",".$lng."&daddr=".$row['Latitude'].",".$row['Longitude']."'>";
 			echo $row['Address'].", ".$row['Town']."</a>";
 			printf(" (%.2f miles)", $d);
 			echo "</td></tr>";
 		}else{
-			echo "<tr><td>Location:</td><td>";
+			echo "<tr><td>Location:</td>";
+			if ($mbl){
+				echo "</tr><tr>";
+			}
+			echo "<td>";
 			echo "<a class='linkButton' target='_blank' href='http://maps.google.com/maps?q=".$row['Latitude'].",".$row['Longitude']."'>";
 			echo $row['Address'] . ", " . $row['Town'] . "</a></td></tr>";		
 		}
-		echo "<tr><td>Type:</td><td>";
+		echo "<tr><td>Type:</td>";
+		if ($mbl){
+			echo "</tr><tr>";
+		}
+		echo "<td>";
 		if ($row['IsOpen']==1)
 		{
 			echo "<button onclick='explainOpen()'>Open</button></td></tr>";
@@ -156,7 +226,11 @@
 		}
 		if ($admin){
 			$fname = addslashes($row['Name']);
-			echo "<tr><td>Manage:</td><td><button onclick='deleteMeeting(".$row['id'].")'>Delete!</button></td></tr>";
+			echo "<tr><td>Manage:</td>";
+			if ($mbl){
+				echo "</tr><tr>";
+			}
+			echo "<td><button onclick='deleteMeeting(".$row['id'].")'>Delete!</button></td></tr>";
 		}
 		
 		echo "</table></div>";
@@ -169,5 +243,5 @@
 		echo "<h3>I couldn't find any meetings!</h3>";
 	} 
 
-mysql_close($con);
+	mysql_close($con);
 ?>

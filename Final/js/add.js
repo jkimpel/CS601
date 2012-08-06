@@ -1,28 +1,32 @@
+	/********************
+	*	Joe Kimpel		*
+	*	CS 601			*	
+	*	Final Project	*
+	*	8.5.2012		*
+	*					*
+	*********************/
+
 function validate(){
 	var namePattern= /^.{3,}$/g;
 	if  (!namePattern.test($("#name").val())) {
-		alert("Please enter at least a three character name.");
-		$("#name").focus();
+		neatAlert("Please enter at least a three character name.", "#name");
   		return  false;
  	}
 	var timePattern= /^(0?[1-9]|1[012])(:[0-5]\d)?(am|AM|pm|PM)?$/g;
 	if  (!timePattern.test($("#time").val())) {
-		alert("Please enter a valid time.");
-		$("#time").focus();
+		neatAlert("Please enter a valid time.", "#time");
   		return  false;
  	}
  	var address = $("#address").val();
  	var addressPattern = /^.{3,}?/g;
  	if (!addressPattern.test(address)){
- 		alert("Please enter at least a three character address.");
- 		$("#address").focus();
+ 		neatAlert("Please enter at least a three character address.", "#address");
  		return false;
  	}
  	var town = $("#town").val();
  	var townPattern = /^.{3,}?/g;
  	if (!townPattern.test(town)){
- 		alert("Please enter at least a three character town.");
- 		$("#town").focus();
+ 		neatAlert("Please enter at least a three character town.", "#town");
  		return false;
  	}
  	var fullAddress = address + " " + town + ", MA";
@@ -39,14 +43,18 @@ function validate(){
 		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
 			var rlat = locResponse.query.results.json.results.geometry.location.lat;
 			var rlng = locResponse.query.results.json.results.geometry.location.lng;
-			$("#lat").val(rlat); 
-			$("#lng").val(rlng);
+			$("#alat").val(rlat); 
+			$("#alng").val(rlng);
 			$("#status").html("Ready To Submit!");
-			$("#dmap").html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=16&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
+			$("#dmap").html('<iframe width="250" height="250" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=15&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
+			/*
+			 *	Note: the above iframe will cause javascript errors in Chrome as per http://code.google.com/p/chromium/issues/detail?id=43173
+			 * 		These are a known, unfixed issue, and cause no problems
+			 */
 			$("#submitButton").show();
 			$("#editButton").show();
 		} else {
-			alert("Unable to process location! Try again!");
+			neatAlert("Unable to process location! Try again!", "#address");
 			unfreeze();
 		}
 	});
@@ -79,17 +87,17 @@ function unfreeze(){
 }
 
 function compactDaySelect(){
-	var state = $("#day").val();
-	$("#day").html("<option value='"+state+"'>"+dayOf(state)+"</option>");
+	var state = $("#aday").val();
+	$("#aday").html("<option value='"+state+"'>"+dayOf(state)+"</option>");
 }
 
 function expandDaySelect(){
-	var state = $("#day").val();
-	$("#day").html("");
+	var state = $("#aday").val();
+	$("#aday").html("");
 	for (var i = 0; i < 7; i++){
-		$("#day").append("<option value='"+i+"'>"+dayOf(i)+"</option>");
+		$("#aday").append("<option value='"+i+"'>"+dayOf(i)+"</option>");
 	}
-	$("#day").val(state);
+	$("#aday").val(state);
 }
 
 function dayOf(num){
@@ -111,8 +119,21 @@ function expandIsOpenSelect(){
 	$("#isOpen").val(state);
 }
 
+function neatAlert(feedback, direct){
+	$("#alertDialog").html(feedback);
+	$("#alertDialog").dialog({
+		modal: true,
+		buttons: {
+			OK: function(){
+				$(this).dialog("close");
+				$(direct).focus();
+			}
+		}
+	});
+}
+
 function ajaxData(){
-	$.get("addMeeting.php", $("form").serialize(), function(data){
+	$.get("addMeeting.php", $("#newMeetingForm").serialize(), function(data){
 		$("#confirmDialog").html(data);
 		$("#confirmDialog").dialog({
 			modal:true,
@@ -136,23 +157,7 @@ function resetForm(){
 	$("#town").val("");
 	$("#time").val("");
 	$("#isOpen").val("1");
-	$("#day").val("0");
-	$("#dmap").html("");
+	$("#aday").val("0");
+	$("#dmap").html("Enter Meeting Details!");
 }
 
-$(function() {
-	$("button").button();
-	$("a.linkButton").button();
-	$("#validateButton").click(function(event){
-		event.preventDefault();
-		validate();
-	});
-	$("#editButton").click(function(event){
-		event.preventDefault();
-		unfreeze();
-	});
-	$("#submitButton").click(function(event){
-		event.preventDefault();
-		ajaxData();
-	});
-});

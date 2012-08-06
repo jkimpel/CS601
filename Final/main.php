@@ -1,4 +1,11 @@
 <!doctype html>
+<!--*********************
+	*	Joe Kimpel		*
+	*	CS 601			*	
+	*	Final Project	*
+	*	8.5.2012		*
+	*					*
+	*********************-->
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -9,10 +16,10 @@
 		$detect = new Mobile_Detect();
 		$mbl = $detect->isMobile();
 		if ($mbl){
-			echo '<link href="nerna_style_m.css" type="text/css" rel="stylesheet"/>';
+			echo '<link href="css/style_m.css" type="text/css" rel="stylesheet"/>';
 			echo '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">';
 		}else{
-			echo '<link href="nerna_style.css" type="text/css" rel="stylesheet"/>';
+			echo '<link href="css/style.css" type="text/css" rel="stylesheet"/>';
 		}
 	?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
