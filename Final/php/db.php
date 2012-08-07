@@ -6,6 +6,9 @@
 	*	8.5.2012		*
 	*					*
 	*********************/
+//	db.php
+//		This shared file initiates connection to the database
+	
 	$con = mysql_connect("localhost","736253_root","cs601");
 	if (!$con)
 	{

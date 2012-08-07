@@ -5,7 +5,13 @@
 	*	8.5.2012		*
 	*					*
 	*********************/
-
+	
+//	add.js
+//		This file handles javascript for the 'Add Meeting' tab of main.php
+	
+//This function validates the user's input
+//	which includes sending a geocoding query to determine lat/lng coordinates 
+//	for the location the user specified
 function validate(){
 	var namePattern= /^.{3,}$/g;
 	if  (!namePattern.test($("#name").val())) {
@@ -29,23 +35,18 @@ function validate(){
  		neatAlert("Please enter at least a three character town.", "#town");
  		return false;
  	}
+ 	
  	var fullAddress = address + " " + town + ", MA";
- 	var inpts = fullAddress.split(" ");
-	var inptf = inpts[0];
-	for (i = 1; i < inpts.length; i++){
-		inptf = inptf + "%2B" + inpts[i];
-	}
-
-	var locurl =
-		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
-		+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
+	var locurl = getGeocodeUrl(fullAddress);
+	
+	//What we want here is a lat&lng pair to put in the database, so we can do distance based searches
 	$.getJSON(locurl, function(locResponse) {
 		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
 			var rlat = locResponse.query.results.json.results.geometry.location.lat;
 			var rlng = locResponse.query.results.json.results.geometry.location.lng;
 			$("#alat").val(rlat); 
 			$("#alng").val(rlng);
-			$("#status").html("Ready To Submit!");
+			$("#status").html("<h3 class='styled'>Ready To Submit!</h3>");
 			$("#dmap").html('<iframe width="250" height="250" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q='+rlat+','+rlng+'&amp;num=1&amp;t=m&amp;ie=UTF8&amp;z=15&amp;ll='+rlat+','+rlng+'&amp;output=embed"></iframe>');
 			/*
 			 *	Note: the above iframe will cause javascript errors in Chrome as per http://code.google.com/p/chromium/issues/detail?id=43173
@@ -62,8 +63,9 @@ function validate(){
 	return false;
 }
 
+//This function freezes the input once the user has started the validation process
 function freeze(){
-	$("#status").html("Looking Up Location...");
+	$("#status").html("<h3 class='styled'>Looking Up Location...</h3>");
 	$("#name").attr('readonly', true);
 	$("#time").attr('readonly', true);
 	$("#address").attr('readonly', true);
@@ -73,8 +75,9 @@ function freeze(){
 	$("#validateButton").hide();
 }
 
+//This unfreezes the inputs
 function unfreeze(){
-	$("#status").html("Awaiting Input");
+	$("#status").html("<h3 class='styled'>Awaiting Input</h3>");
 	$("#name").attr('readonly', false);
 	$("#time").attr('readonly', false);
 	$("#address").attr('readonly', false);
@@ -86,11 +89,13 @@ function unfreeze(){
 	$("#submitButton").hide();
 }
 
+//This compacts the day select box down so it can't be changed
 function compactDaySelect(){
 	var state = $("#aday").val();
 	$("#aday").html("<option value='"+state+"'>"+dayOf(state)+"</option>");
 }
 
+//This expands the day select box so it can once again be edited
 function expandDaySelect(){
 	var state = $("#aday").val();
 	$("#aday").html("");
@@ -100,11 +105,7 @@ function expandDaySelect(){
 	$("#aday").val(state);
 }
 
-function dayOf(num){
-	var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-	return days[num];
-}
-
+//Compacts the meeting type select box
 function compactIsOpenSelect(){
 	var state = $("#isOpen").val();
 	if (state == "1")
@@ -113,27 +114,17 @@ function compactIsOpenSelect(){
 		$("#isOpen").html("<option value='0'>Closed</option>");
 }
 
+//expands the meeting type select box
 function expandIsOpenSelect(){
 	var state = $("#isOpen").val();
 	$("#isOpen").html("<option value='1'>Open</option><option value='0'>Closed</option>");
 	$("#isOpen").val(state);
 }
 
-function neatAlert(feedback, direct){
-	$("#alertDialog").html(feedback);
-	$("#alertDialog").dialog({
-		modal: true,
-		buttons: {
-			OK: function(){
-				$(this).dialog("close");
-				$(direct).focus();
-			}
-		}
-	});
-}
-
+//This method sends the info via ajax to the server
+//	and displays the response in a dialog
 function ajaxData(){
-	$.get("addMeeting.php", $("#newMeetingForm").serialize(), function(data){
+	$.get("php/addMeeting.php", $("#newMeetingForm").serialize(), function(data){
 		$("#confirmDialog").html(data);
 		$("#confirmDialog").dialog({
 			modal:true,
@@ -149,6 +140,7 @@ function ajaxData(){
 	});
 }
 
+//This method clears out all the info the user put in the form
 function resetForm(){
 	unfreeze();
 	$("#name").val("");
@@ -158,6 +150,6 @@ function resetForm(){
 	$("#time").val("");
 	$("#isOpen").val("1");
 	$("#aday").val("0");
-	$("#dmap").html("Enter Meeting Details!");
+	$("#dmap").html("<h3 class='styled'>Enter Meeting Details!</h3>");
 }
 

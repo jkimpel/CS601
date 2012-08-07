@@ -4,7 +4,12 @@
 	*	Final Project	*
 	*	8.5.2012		*
 	*					*
-	*********************/
+	*********************
+	
+	This is the stylesheet for non-mobile users
+	
+	*/
+	
 body{
 	background-color: lightgray;
 }
@@ -114,6 +119,7 @@ select{
 	color: #1C94C4;
 	-webkit-appearance: none;
 }
+/* Some tweeks to the jquery-ui stuff */
 .ui-accordion .ui-accordion-content{ overflow:hidden !important; }
 .ui-accordion-content-active{
 	padding-bottom: 25px !important;

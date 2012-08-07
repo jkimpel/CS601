@@ -4,12 +4,28 @@
 	*	Final Project	*
 	*	8.5.2012		*
 	*					*
-	*********************/
+	*********************
+
+	This is the stylesheet for mobile users
+	
+	*/
+
 body{
 	background-color: lightgray;
 	font-size: 100%;
 }
-h1, h3{
+h1{
+	margin-left:auto;
+	margin-right:auto;
+	width:90%;
+	text-align: center;
+	padding: 5px;
+	font-family: Arial, sans-serif;
+	border: 1px solid #C8C8C8;
+	border-radius:5px;
+	background-color: lightblue;
+}
+h3.styled{
 	margin-left:auto;
 	margin-right:auto;
 	width:90%;
@@ -98,6 +114,11 @@ select{
 div.ui-datepicker select{
 	display: inline;
 }
+img.mine{
+	display: block;
+	margin-right: auto;
+	margin-left: auto;
+}
 span.highlight{
 	color:red;
 }
@@ -120,9 +141,10 @@ input{
 	margin-left: auto;
 	margin-right: auto;
 }
+/* Some tweeks to the jquery-ui stuff */
 .ui-accordion .ui-accordion-content{ overflow:hidden !important; }
 .ui-accordion-content-active{
-	padding-bottom: 15px !important;
+	padding-bottom: 25px !important;
 }
 .ui-button{
 	display: block;

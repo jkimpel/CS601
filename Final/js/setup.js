@@ -5,6 +5,9 @@
 	*	8.5.2012		*
 	*					*
 	*********************/
+//	setup.js
+//		This file contains all javascript to set up the initial load
+//		of main.php
 
 //This little function converts the option labels from static
 //	to dynamically naming today and tomorrow

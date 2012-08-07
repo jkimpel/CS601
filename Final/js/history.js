@@ -5,9 +5,16 @@
 	*	8.5.2012		*
 	*					*
 	*********************/
+//	history.js
+//		This file handles handles the user's location history,
+//		all of which is stored client-side using HTML5 local storage
+//		(There was no need for the server to be aware of the location
+//		so this was a better option than cookies to reduce bandwidth)
+//		Note: local storage does not support arrays, thus the slightly
+//			cumbersome code here
 
+//Add a new location to history
 function updateHistory(lat, lng, town){
-
 	if ((town != localStorage.recentName0) && 
 		(town != localStorage.recentName1) && 
 		(town != localStorage.recentName2)){
@@ -51,6 +58,7 @@ function refreshHistory(){
 	}
 }
 
+//set the location based on a saved location
 function locFromHistory(index){
 	var hlat, hlng, hname;
 	switch (index){

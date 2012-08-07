@@ -5,24 +5,18 @@
 	*	8.5.2012		*
 	*					*
 	*********************/
+//	search.js
+//		This file handles the 'Find Meeting' tab of main.php
+
 
 //This handles manually typed locations
 function clickSubmit(){
 	var locale = $("#location").val();
-	var inpts = locale.split(" ");
-	var inptf = inpts[0];
-	for (i = 1; i < inpts.length; i++){
-		inptf = inptf + "%2B" + inpts[i];
-	}
-
-	//Using YQL allows us to bypass the same-origin policy
-	var locurl =
-		"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fmaps.googleapis.com%2Fmaps%2Fapi%2Fgeocode%2Fjson%3Faddress%3D" 
-		+ inptf + "%26sensor%3Dtrue%22&format=json&diagnostics=true";
-		
+	var locurl = getGeocodeUrl(locale);
 	var zip = null;
-	$.getJSON(locurl, function(locResponse) {
 	
+	$.getJSON(locurl, function(locResponse) {
+
 		//See this url for an explanation of the JSON results:
 		//	https://developers.google.com/maps/documentation/geocoding/#JSON
 		if (locResponse.query.results.json.status == "OK" && locResponse.query.results.json.results.geometry != null){
@@ -35,21 +29,22 @@ function clickSubmit(){
 }
 
 //This handles auto-location
+//	basic reference: http://www.w3schools.com/html5/html5_geolocation.asp
 function clickLocate(){
 	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-	$('div.autolocate').html("<div>Attempting geolocation...</div>");
+	$('#autolocate').html("Attempting geolocation...");
 }
 
 //called when geolocation succeeds
 function successCallback(position){
-	$('div.autolocate').html("<div>Geolocation Suceeded</div>");
+	$('#autolocate').html("Geolocation Suceeded");
 	processLatLong(position.coords.latitude, position.coords.longitude);
 }
 
 //called when geolocation fails
 function errorCallback(error){
 	neatAlert("GeoLocation failed!");
-	$('div.autolocate').html("<div>Unable to retrieve location :-(</div>");
+	$('#autolocate').html("Unable to retrieve location :-(");
 }
 
 //Once we have the location to a latitude & longitude, this method handles it
@@ -105,7 +100,7 @@ function processLatLong(lat, lng){
 
 //This method retrieves information about meetings from the server & formats them
 function ajaxTable(){
-	$.get("meetings_acc.php", $("#query").serialize(), function(data){
+	$.get("php/findMeetings.php", $("#query").serialize(), function(data){
 		$("#results").html(data);
 		$("div.result").show();
 		$("button").button();

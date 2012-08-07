@@ -5,14 +5,21 @@
 	*	Final Project	*
 	*	8.5.2012		*
 	*					*
-	*********************-->
+	*********************
+	
+	Please see readme.txt for more info.-->
+	
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Meeting Finder</title>
 	<link rel="stylesheet" href="jquery-ui-1.8.22.custom/css/overcast/jquery-ui-1.8.22.custom.css">
 	<?php
-		include("Mobile_Detect.php");
+		/*	Some use was made in this file of Mobile_Detect.php
+		 *	to format the site for mobile use if appropriate
+		 *  http://code.google.com/p/php-mobile-detect/
+		 */
+		include("php/Mobile_Detect.php");
 		$detect = new Mobile_Detect();
 		$mbl = $detect->isMobile();
 		if ($mbl){
@@ -24,6 +31,7 @@
 	?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   	<script src="jquery-ui-1.8.22.custom/js/jquery-ui-1.8.22.custom.min.js"></script>
+  	<script src="js/util.js"></script>
   	<script src="js/add.js"></script>
   	<script src="js/calc.js"></script>
   	<script src="js/history.js"></script>
@@ -35,7 +43,7 @@
 	<h1>Meeting Finder</h1>
 	<?php
 		if(!$mbl){
-			echo '<h3 class="title">Boston Area Narcotics Anonymous</h3>';
+			echo '<h3 class="title styled">Boston Area Narcotics Anonymous</h3>';
 		}
 	?>
 	<div id="navTabs">
@@ -52,7 +60,7 @@
 				}
 			?>
 		</ul>
-		<div id="navtabs-1">
+		<div id="navtabs-1">	<!--*************Find a Meeting Tab**************-->
 			<div class='formLeft'>
 				<div class='forma'>
 					<h4>Location</h4>
@@ -68,7 +76,7 @@
 							</ul>
 					<?php endif; ?>
 							<div id="tabs-1">
-								<div class="autolocate">Try Automatic Location</div>
+								<h3 class="styled" id="autolocate">Try Automatic Location</h3>
 								<div><button id="locate" onclick="clickLocate()">Locate Me!</button></div>
 							</div>
 					<?php if ($mbl): ?>
@@ -76,7 +84,8 @@
 					<?php endif; ?>
 							<div id="tabs-2">
 								<div>
-									Location: <input type="text" id="location" name="location"/>
+									<h3 class='styled'>Enter a Location: </h3>
+									<input type="text" id="location" name="location"/>
 								</div>
 								<div>
 									<button id="submit" onclick="clickSubmit()">Submit!</button>
@@ -140,9 +149,9 @@
 			</div>
 			<div class="formRight">
 				<div class="forma">
-					<h3>Results:</h3>
+					<h3 class="styled">Results:</h3>
 					<div id="results">
-						Click Search!
+						<h3 class='styled'>Click Search!</h3>
 					</div>
 				</div>
 			</div>
@@ -157,15 +166,13 @@
 				<div id="authFeedback"></div>
 			</div>
 		</div>
-		<div id="navtabs-2">
+		<div id="navtabs-2">	<!--*************Add a Meeting Tab**************-->
 			<form name='newMeetingForm' id='newMeetingForm' onsubmit='return validate()'>
 				<div class='formLeft'>
 					<div class='forma'><span class="label">Meeting Name:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='name' name='name' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Day of week:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<select id="aday" name="day">
 							<option value="0">Sunday</option>
 							<option value="1">Monday</option>
@@ -177,19 +184,15 @@
 						</select>
 					</div>
 					<div class='forma'><span class="label">Time:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='time' name='time' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Address:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='address' name='address' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Town:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<input id='town' name='town' type='text'/>
 					</div>
 					<div class='forma'><span class="label">Type of Meeting:</span>
-						<?php if ($mbl) echo "<br/>"; ?>
 						<select id="isOpen" name="isOpen">
 							<option value="1">Open</option>
 							<option value="0">Closed</option>
@@ -199,7 +202,7 @@
 				</div>
 				<div class='formRight'>
 					<div class='forma' id='dmap'>
-						Enter Meeting Details!
+						<h3 class='styled'>Enter Meeting Details!</h3>
 					</div>
 					<div class='forma'>
 						<div id='status'></div>
@@ -215,10 +218,10 @@
 			<div id="alertDialog" title="Clarification Needed"></div>
 			<div class="footer"></div>
 		</div>
-		<div id="navtabs-3">
+		<div id="navtabs-3">	<!--*************Calculate Time Tab**************-->
 			<div class="formLeft">
 				<div class="forma">
-					<h3>Enter Clean Date:</h3>
+					<h3 class="styled">Enter Clean Date:</h3>
 					<input type="text" id="datepicker"/>
 				</div>
 				<div class="forma">
@@ -235,6 +238,7 @@
 	</div>
 	<div class="footer">Contact: <a href="mailto:jmkimpel@bu.edu">jmkimpel@bu.edu</a></div>
 	<div class="footer"><small>&copy;Joe Kimpel 2012</small></div>
+	<div class="footer"><small>Site dedicated to Catey B.</small></div>
 	<div id="detect"><div class="footer">Mobile Detected!</div></div>
 </body>
 </html>
