@@ -50,6 +50,10 @@ I also did some testing on Firefox, Safari and Opera, and didn't see any major d
 
 For Mobile, I did most of my testing on Android Browser on Android 2.2.2 on my Motorola Triumph.
 
+A full history of my development on this project is on github:
+
+https://github.com/jkimpel/CS601/commits/master/Final
+
 Thanks for taking a look!  I look forward to getting some feedback on my work.
 
 -- Joe Kimpel
